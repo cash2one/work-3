@@ -1,0 +1,6 @@
+https://auth.cloud.alipay.com/#/cloudauth/login?goto=https:%2F%2Fgit.cloud.alipay.com%2Fauth%2Fhttps:%2F%2Fgit.cloud.alipay.com%2Fdashboard%2Fprojects
+
+
+
+
+http://cloud2-portal.trustlife.com:8080/privilege/static/index.html
