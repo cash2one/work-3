@@ -1,0 +1,72 @@
+本地：			本地： 172.16.1.93:8080
+
+Server ECS:		自测：10.253.22.58:8080	    用户测试：10.253.24.106
+
+Client ECS:		自测：10.253.107.196:8080   用户测试：10.253.22.189
+
+UMS    ECS：		自测：0.0.0.0:8080          用户测试：10.253.12.235 ：8080
+
+DNS    ECS:		10.253.8.86 root  LI40P3aW
+---------------------------------------------------------------------------
+ECS 服务器 
+
+自测环境：
+sso
+	10.253.22.58    root Ssotest123
+privilege 
+	10.253.107.196	root  Privilegetest123
+---------------------------------------------------------------------------
+用户测试环境：
+
+sso  
+	10.253.24.106  admin Admin1234
+
+		       root  SSOuat123                                  /opt/software/install/jetty-8.1.17/logs
+                                                                        tail -f 2017_04_27.stderrout.log
+privilege  
+	10.253.22.189  admin Admin1234
+		       root  PRIVILEGEuat123
+ums
+	10.253.12.235  root  PRIVILEGEuat123
+
+---------------------------------------------------------------------------
+
+//验证server端启动restlet
+https://sso.trust.com:8443/v1/tickets*
+
+//单点登录Portal首页		-Dspring.profiles.active=local
+
+http://portal.trustlife.com:8080/mPortal/static/index.html
+
+http://portal.trustlife.com:8080/privilege/static/index.html
+
+//UMS云上地址：
+http://ums.trust.com:8080/ums/static/index.html
+
+--------------------------------------------------------------------------
+//列出云上的java信任证书
+keytool -list -keystore "/opt/software/install/jdk-1.7.1_71-x86_64/jre/lib/security/cacerts"
+
+//列出本地的java信任证书
+keytool -list -keystore "C:\Program Files\Java\jdk1.7.0_80\jre\lib\security\cacerts"
+
+//删除本地java信任证书
+keytool -delete -alias trust -keystore "C:\Program Files\Java\jdk1.7.0_80\jre\lib\security\cacerts"
+
+
+//删除云裳java信任证书
+keytool -delete -alias trust -keystore "/opt/software/install/jdk-1.7.1_71-x86_64/jre/lib/security/cacerts"
+
+//导入云上java信任证书
+keytool -import -keystore "/opt/software/install/jdk-1.7.0_71-x86_64/jre/lib/security/cacerts" -file "/home/admin/SSLkey/trustlifekey.crt" -alias trustlife
+		   
+//导入本地java信任证书
+keytool -import -keystore "E:\Users\Java\jdk1.7.0_80\jre\lib\security\cacerts" -file "E:\trust.crt" -alias trust
+
+keytool -import -keystore "C:\Program Files\Java\jdk1.7.0_80\jre\lib\security\cacerts" -file "E:\home\admin\trustlife.crt" -alias trustlife
+
+
+
+---------------------------------------------------------------------------
+keytool -import -keystore "/home/admin/.keystore" -file "/opt/software/install/jdk-1.7.0_71-x86_64/jre/lib/security/cacerts" -alias trustlife
+
