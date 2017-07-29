@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.StateTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.StateType" >
+    <id column="State_Type_Cd" property="stateTypeCd" jdbcType="VARCHAR" />
+    <result column="State_Type_Name" property="stateTypeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    State_Type_Cd, State_Type_Name
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.trust.privilege.model.StateTypeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_state_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_state_type
+    where State_Type_Cd = #{stateTypeCd,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_state_type
+    where State_Type_Cd = #{stateTypeCd,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.trust.privilege.model.StateTypeExample" >
+    delete from t_state_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.trust.privilege.model.StateType" >
+    insert into t_state_type (State_Type_Cd, State_Type_Name)
+    values (#{stateTypeCd,jdbcType=VARCHAR}, #{stateTypeName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.trust.privilege.model.StateType" >
+    insert into t_state_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="stateTypeCd != null" >
+        State_Type_Cd,
+      </if>
+      <if test="stateTypeName != null" >
+        State_Type_Name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="stateTypeCd != null" >
+        #{stateTypeCd,jdbcType=VARCHAR},
+      </if>
+      <if test="stateTypeName != null" >
+        #{stateTypeName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.trust.privilege.model.StateTypeExample" resultType="java.lang.Integer" >
+    select count(*) from t_state_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_state_type
+    <set >
+      <if test="record.stateTypeCd != null" >
+        State_Type_Cd = #{record.stateTypeCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stateTypeName != null" >
+        State_Type_Name = #{record.stateTypeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_state_type
+    set State_Type_Cd = #{record.stateTypeCd,jdbcType=VARCHAR},
+      State_Type_Name = #{record.stateTypeName,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trust.privilege.model.StateType" >
+    update t_state_type
+    <set >
+      <if test="stateTypeName != null" >
+        State_Type_Name = #{stateTypeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where State_Type_Cd = #{stateTypeCd,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trust.privilege.model.StateType" >
+    update t_state_type
+    set State_Type_Name = #{stateTypeName,jdbcType=VARCHAR}
+    where State_Type_Cd = #{stateTypeCd,jdbcType=VARCHAR}
+  </update>
+</mapper>

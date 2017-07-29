@@ -1,0 +1,55 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:sofa="http://schema.alipay.com/sofa/schema/slite"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://schema.alipay.com/sofa/schema/slite http://schema.alipay.com/sofa/slite.xsd"
+	default-autowire="byName">
+	
+	
+<!-- 系统service -->    
+    <bean id="systemPlatFormService" 
+    		class="com.trust.privilege.service.impl.SystemPlatFormServiceImpl" />
+
+<!-- 菜单Service -->	
+	<bean id="menuService" 
+			class="com.trust.privilege.service.impl.MenuServiceImpl" />
+	
+<!-- 资源Service -->	
+	<bean id="privilegeService" 
+			class="com.trust.privilege.service.impl.PrivilegeServiceImpl" />
+		
+<!-- 角色Service -->			
+	<bean id="roleService" 
+			class="com.trust.privilege.service.impl.RoleServiceImpl" />
+
+<!-- 用户组Service -->   
+    <bean id="groupService" 
+    		class="com.trust.privilege.service.impl.GroupServiceImpl" />
+
+<!-- 用户Service -->	
+	<bean id="sysUserService" 
+			class="com.trust.privilege.service.impl.SystemUserServcieImpl" />
+<!-- 日志Service -->			
+	<bean id="logService" 
+			class="com.trust.privilege.service.impl.LogServiceImpl" />
+	
+<!-- 文件Service -->	
+	<bean id="bulkInitDataService" 
+			class="com.trust.privilege.service.impl.BulkInitDataServiceImpl" />
+		
+<!-- portal Service -->			
+	<bean id="initPortalPageService" 
+			class="com.trust.privilege.service.impl.InitPortalPageServiceImpl" />
+	
+<!-- Oss Service -->	
+	<bean id="ossService" 
+			class="com.trust.privilege.service.impl.OssServiceImpl" />
+	
+</beans>

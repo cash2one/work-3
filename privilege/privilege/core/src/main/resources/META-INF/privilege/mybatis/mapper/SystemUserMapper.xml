@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.SystemUserMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.SystemUser" >
+    <id column="SYSTEM_USER_ID" property="systemUserId" jdbcType="VARCHAR" />
+    <result column="User_Name" property="userName" jdbcType="VARCHAR" />
+    <result column="Password" property="password" jdbcType="VARCHAR" />
+    <result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+    <result column="Update_Dt" property="updateDt" jdbcType="TIMESTAMP" />
+    <result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+    <result column="User_Desc" property="userDesc" jdbcType="VARCHAR" />
+    <result column="Create_User_Id" property="createUserId" jdbcType="VARCHAR" />
+    <result column="ID_Card" property="idCard" jdbcType="VARCHAR" />
+    <result column="Tel_Number" property="telNumber" jdbcType="VARCHAR" />
+    <result column="Reserve5" property="reserve5" jdbcType="VARCHAR" />
+    <result column="Member_Type" property="memberType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    SYSTEM_USER_ID, User_Name, Password, Create_Dt, Update_Dt, State_CD, User_Desc, Create_User_Id, 
+    ID_Card, Tel_Number, Reserve5, Member_Type
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.trust.privilege.model.SystemUserExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_system_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_system_user
+    where SYSTEM_USER_ID = #{systemUserId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_system_user
+    where SYSTEM_USER_ID = #{systemUserId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.trust.privilege.model.SystemUserExample" >
+    delete from t_system_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.trust.privilege.model.SystemUser" >
+    insert into t_system_user (SYSTEM_USER_ID, User_Name, Password, 
+      Create_Dt, Update_Dt, State_CD, 
+      User_Desc, Create_User_Id, ID_Card, 
+      Tel_Number, Reserve5, Member_Type
+      )
+    values (#{systemUserId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{createDt,jdbcType=TIMESTAMP}, #{updateDt,jdbcType=TIMESTAMP}, #{stateCd,jdbcType=VARCHAR}, 
+      #{userDesc,jdbcType=VARCHAR}, #{createUserId,jdbcType=VARCHAR}, #{idCard,jdbcType=VARCHAR}, 
+      #{telNumber,jdbcType=VARCHAR}, #{reserve5,jdbcType=VARCHAR}, #{memberType,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.trust.privilege.model.SystemUser" >
+    insert into t_system_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="systemUserId != null" >
+        SYSTEM_USER_ID,
+      </if>
+      <if test="userName != null" >
+        User_Name,
+      </if>
+      <if test="password != null" >
+        Password,
+      </if>
+      <if test="createDt != null" >
+        Create_Dt,
+      </if>
+      <if test="updateDt != null" >
+        Update_Dt,
+      </if>
+      <if test="stateCd != null" >
+        State_CD,
+      </if>
+      <if test="userDesc != null" >
+        User_Desc,
+      </if>
+      <if test="createUserId != null" >
+        Create_User_Id,
+      </if>
+      <if test="idCard != null" >
+        ID_Card,
+      </if>
+      <if test="telNumber != null" >
+        Tel_Number,
+      </if>
+      <if test="reserve5 != null" >
+        Reserve5,
+      </if>
+      <if test="memberType != null" >
+        Member_Type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="systemUserId != null" >
+        #{systemUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="createDt != null" >
+        #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDt != null" >
+        #{updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stateCd != null" >
+        #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="userDesc != null" >
+        #{userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="telNumber != null" >
+        #{telNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve5 != null" >
+        #{reserve5,jdbcType=VARCHAR},
+      </if>
+      <if test="memberType != null" >
+        #{memberType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.trust.privilege.model.SystemUserExample" resultType="java.lang.Integer" >
+    select count(*) from t_system_user
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_system_user
+    <set >
+      <if test="record.systemUserId != null" >
+        SYSTEM_USER_ID = #{record.systemUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null" >
+        User_Name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null" >
+        Password = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDt != null" >
+        Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateDt != null" >
+        Update_Dt = #{record.updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.stateCd != null" >
+        State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userDesc != null" >
+        User_Desc = #{record.userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserId != null" >
+        Create_User_Id = #{record.createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.idCard != null" >
+        ID_Card = #{record.idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="record.telNumber != null" >
+        Tel_Number = #{record.telNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reserve5 != null" >
+        Reserve5 = #{record.reserve5,jdbcType=VARCHAR},
+      </if>
+      <if test="record.memberType != null" >
+        Member_Type = #{record.memberType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_system_user
+    set SYSTEM_USER_ID = #{record.systemUserId,jdbcType=VARCHAR},
+      User_Name = #{record.userName,jdbcType=VARCHAR},
+      Password = #{record.password,jdbcType=VARCHAR},
+      Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      Update_Dt = #{record.updateDt,jdbcType=TIMESTAMP},
+      State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      User_Desc = #{record.userDesc,jdbcType=VARCHAR},
+      Create_User_Id = #{record.createUserId,jdbcType=VARCHAR},
+      ID_Card = #{record.idCard,jdbcType=VARCHAR},
+      Tel_Number = #{record.telNumber,jdbcType=VARCHAR},
+      Reserve5 = #{record.reserve5,jdbcType=VARCHAR},
+      Member_Type = #{record.memberType,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trust.privilege.model.SystemUser" >
+    update t_system_user
+    <set >
+      <if test="userName != null" >
+        User_Name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        Password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="createDt != null" >
+        Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDt != null" >
+        Update_Dt = #{updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stateCd != null" >
+        State_CD = #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="userDesc != null" >
+        User_Desc = #{userDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        Create_User_Id = #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="idCard != null" >
+        ID_Card = #{idCard,jdbcType=VARCHAR},
+      </if>
+      <if test="telNumber != null" >
+        Tel_Number = #{telNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="reserve5 != null" >
+        Reserve5 = #{reserve5,jdbcType=VARCHAR},
+      </if>
+      <if test="memberType != null" >
+        Member_Type = #{memberType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where SYSTEM_USER_ID = #{systemUserId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trust.privilege.model.SystemUser" >
+    update t_system_user
+    set User_Name = #{userName,jdbcType=VARCHAR},
+      Password = #{password,jdbcType=VARCHAR},
+      Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      Update_Dt = #{updateDt,jdbcType=TIMESTAMP},
+      State_CD = #{stateCd,jdbcType=VARCHAR},
+      User_Desc = #{userDesc,jdbcType=VARCHAR},
+      Create_User_Id = #{createUserId,jdbcType=VARCHAR},
+      ID_Card = #{idCard,jdbcType=VARCHAR},
+      Tel_Number = #{telNumber,jdbcType=VARCHAR},
+      Reserve5 = #{reserve5,jdbcType=VARCHAR},
+      Member_Type = #{memberType,jdbcType=VARCHAR}
+    where SYSTEM_USER_ID = #{systemUserId,jdbcType=VARCHAR}
+  </update>
+</mapper>

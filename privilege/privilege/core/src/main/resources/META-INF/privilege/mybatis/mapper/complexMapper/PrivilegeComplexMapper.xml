@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.complexMapper.PrivilegeComplexMapper" >
+
+<!-- resultMap -->
+	<resultMap id="getPrivilegeByMenuIdsMap" type="com.trust.privilege.model.PrivilegeRes">
+		<id column="Privilege_Res_Id" property="privilegeResId" jdbcType="VARCHAR" />
+	    <result column="Res_Name" property="resName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+<!-- 用户关联角色查询资源 -->
+	<select id="getAllPrivilege" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 	
+			DISTINCT
+				tpr.Privilege_Res_Id privilegeResId,
+				tpr.Res_Name resName,
+				tpr.Res_Desc resDesc,
+				tpr.URL url,
+				tpr.State_CD stateCd,
+				tpr.System_Platform_Cd systemPlatformCd,
+				tm.Menu_Id menuId,
+				tm.Menu_Name menuName,
+				tspc.System_Platform_Name systemPlatformName,
+				tprtc.Res_Type_Name resTypeName,
+				tprtc.Res_Type_Cd resTypeCd,
+				tsu.User_Name userName,
+				DATE_FORMAT(tpr.Create_Date, '%Y-%m-%d') createDate,
+				tpr.Mark mark
+		FROM
+			t_user_role_instance turi
+		LEFT JOIN t_group_role tgr 
+			ON turi.Group_Id = tgr.Group_Id
+		INNER JOIN t_role_privilege_res trpr 
+			ON tgr.Role_Id = trpr.Role_Id
+		INNER JOIN t_privilege_res tpr 
+			ON trpr.Privilege_Res_Id = tpr.Privilege_Res_Id
+		LEFT JOIN t_menu tm 
+			ON tpr.Menu_Id = tm.Menu_Id
+		LEFT JOIN t_system_platform_code tspc 
+			ON tpr.System_Platform_CD = tspc.System_Platform_CD
+		LEFT JOIN t_privilege_res_type_code tprtc 
+			ON tpr.Res_Type_CD = tprtc.Res_Type_CD
+		LEFT JOIN t_system_user tsu 
+			ON turi.SYSTEM_USER_ID = tsu.SYSTEM_USER_ID
+		WHERE
+			tsu.User_Name = #{userName}
+	  <if test="systemPlatformCd!=null and systemPlatformCd!='' and systemPlatformCd!='undefined'">
+	  		AND tpr.System_Platform_CD = #{systemPlatformCd}
+	  </if>
+	  <if test="systemPlatformName!=null and systemPlatformName!=''">
+		    AND tspc.System_Platform_Name Like
+		    CONCAT('%',#{systemPlatformName},'%')
+	  </if>
+	  <if test="resName!=null and resName!='' and resName!='undefined'">
+			AND tpr.Res_Name LIKE 
+			CONCAT('%',#{resName},'%')
+	  </if>
+	  <if test="menuName!=null and menuName!='undefined' and menuName!=''">
+			AND tm.Menu_Name LIKE
+			CONCAT('%',#{menuName},'%')
+	  </if>
+			ORDER BY tpr.Create_Date
+	</select>   
+  
+<!-- 以超级管理员身份查询页面资源 -->
+	<select id="getAllPrivilegeBySuperAdmin" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			  distinct
+			  tpr.Privilege_Res_Id privilegeResId, 
+			  tpr.Res_Name resName,
+			  tpr.Res_Desc resDesc,
+			  tpr.URL url,
+			  tpr.State_CD stateCd,
+			  tpr.System_Platform_Cd systemPlatformCd,
+			  tm.Menu_Id menuId,
+			  tm.Menu_Name menuName,
+			  tspc.System_Platform_Name systemPlatformName,
+			  
+			  tprtc.Res_Type_Name resTypeName,
+			  tprtc.Res_Type_Cd resTypeCd,
+			  tsu.User_Name userName,
+			  DATE_FORMAT(  tpr.Create_Date,'%Y-%m-%d') createDate,
+			  tpr.Mark mark
+	
+		FROM t_privilege_res tpr
+			  LEFT JOIN t_menu tm
+			    ON tpr.Menu_Id = tm.Menu_Id
+			  LEFT JOIN t_system_platform_code tspc
+			    ON tpr.System_Platform_CD = tspc.System_Platform_CD
+			  LEFT JOIN t_privilege_res_type_code tprtc
+			    ON tpr.Res_Type_CD = tprtc.Res_Type_CD
+			  LEFT JOIN t_system_user tsu
+			    ON tpr.Create_User_Id = tsu.User_Name
+	  WHERE 1=1
+			<if test="systemPlatformCd!=null and systemPlatformCd!='' and systemPlatformCd!='undefined'">
+				AND tpr.System_Platform_CD = #{systemPlatformCd}
+			</if>
+			<if test="systemPlatformName!=null and systemPlatformName!=''">
+				AND tspc.System_Platform_Name Like
+				CONCAT('%',#{systemPlatformName},'%')
+			</if>
+			<if test="resName!=null and resName!='' and resName!='undefined'">
+				AND tpr.Res_Name LIKE 
+				CONCAT('%',#{resName},'%')
+			</if>
+			<if test="menuName!=null and menuName!='undefined' and menuName!=''">
+				AND tm.Menu_Name LIKE
+				CONCAT('%',#{menuName},'%')
+			</if>
+		ORDER BY tpr.Create_Date
+	</select>     
+
+<!-- 根据多个菜单Id查询菜单下的有效资源 -->
+	<select id="getPrivilegeByMenuIds" resultMap="getPrivilegeByMenuIdsMap">
+  		<![CDATA[
+  		SELECT 
+			tpr.Privilege_Res_Id,
+			tpr.Res_Name
+		FROM 
+			t_privilege_res tpr
+		WHERE 
+			tpr.State_CD  = #{stateCd} 
+			AND tpr.Menu_Id IN
+  		]]>
+		<foreach item="idItem" collection="list" open="(" separator="," close=")">
+  			#{idItem}
+  		</foreach> 
+	</select>  
+ 
+<!-- 根据用户名，菜单Id查询资源并去重复 -->
+	<select id="selectSysPrivilege" parameterType="map"  resultType="map">
+		SELECT DISTINCT
+			pr.`Privilege_Res_Id` AS resId,
+			pr.`Res_Name` AS resName,
+			pr.`URL`,
+			pr.`Req_Methed`,
+			pr.`Mark`,
+			tp.`Res_Type_CD` AS type
+		FROM
+			t_privilege_res pr
+		INNER JOIN t_privilege_res_type_code tp 
+			ON tp.`Res_Type_CD` = pr.`Res_Type_CD`
+		INNER JOIN t_role_privilege_res rpr 
+			ON rpr.`Privilege_Res_Id` = pr.`Privilege_Res_Id`
+		AND 
+			pr.`Menu_Id` = #{menuId}
+		AND 
+			rpr.`State_CD` = #{stateCd}
+		LEFT JOIN t_group_role tgr 
+			ON tgr.Role_Id = rpr.Role_Id
+		INNER JOIN t_user_role_instance uri 
+			ON uri.Group_Id = tgr.Group_Id
+		INNER JOIN t_system_user u 
+			ON uri.SYSTEM_USER_ID = u.SYSTEM_USER_ID
+		WHERE
+			u.User_Name= #{userName}
+ 	</select >   
+  
+<!-- 通过用户名获取该用户可访问url -->      
+	<select id="selectValidUrlByUserName" parameterType="String" resultType="string">
+		SELECT
+			DISTINCT
+			tm.URL
+		FROM 
+			t_menu tm 
+		LEFT JOIN t_menu_role tmr	
+			ON tmr.Menu_Id = tm.Menu_Id
+			AND tmr.State_CD = '1'
+  			AND tm.State_CD = '1'
+  			AND tm.System_Platform_CD = #{systemId}
+		LEFT JOIN t_role tr
+			ON tr.Role_Id = tmr.Role_Id
+			AND tr.State_CD = '1'
+		LEFT JOIN t_group_role tgr
+			ON tgr.Role_Id = tr.Role_Id
+			AND tgr.State_CD = '1'
+		LEFT JOIN t_user_role_instance uri
+			ON uri.Group_Id = tgr.Group_Id
+			AND uri.State_CD = '1'
+		LEFT JOIN t_system_user u
+			ON u.SYSTEM_USER_ID = uri.SYSTEM_USER_ID
+  		AND u.State_CD = '1'
+		WHERE
+			u.User_Name = #{name}
+		UNION
+		(
+			SELECT
+				DISTINCT
+				tpr.URL
+			FROM
+				t_privilege_res tpr
+			LEFT JOIN  t_role_privilege_res trpr
+				ON trpr.Privilege_Res_Id = tpr.Privilege_Res_Id
+				AND trpr.State_CD = '1'
+				AND tpr.State_CD = '1'
+			LEFT JOIN t_role tr
+				ON tr.Role_Id = trpr.Role_Id
+				AND tr.State_CD = '1'
+			LEFT JOIN	t_group_role tgr
+				ON tgr.Role_Id = tr.Role_Id
+				AND tgr.State_CD = '1'
+			LEFT JOIN t_user_role_instance uri
+				ON uri.Group_Id = tgr.Group_Id
+				AND uri.State_CD = '1'
+			LEFT JOIN t_system_user u 
+				ON u.SYSTEM_USER_ID = uri.SYSTEM_USER_ID
+  				AND u.State_CD = '1'
+			WHERE
+				u.User_Name = #{name}
+		)
+	</select>  
+  
+<!-- 跟据系统CD查询所有的url -->
+	<select id="selectAllUrlBySys" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT 
+		DISTINCT
+	 		m.`URL` 
+		FROM
+	    	t_menu m 
+		WHERE 
+				m.`System_Platform_CD` =#{value} 
+	  	AND 
+	  		m.`URL` IS NOT NULL 
+		UNION
+			(SELECT 
+	  			r.`URL` 
+			FROM
+	  			t_privilege_res r 
+			WHERE 
+					r.`System_Platform_CD` =#{value} 
+	  		AND 
+	  			r.`URL` IS NOT NULL
+	  		)
+	</select>  
+  
+<!-- 通过用户名得到该用户所拥有的系统（将系统配置成资源） -->      
+	<select id="selectSystemceByUserName" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT
+			DISTINCT
+			p.Privilege_Res_Id AS systemId,
+			p.Res_Name AS systemName,
+			p.Req_Methed AS reqMethod,
+			p.URL AS ReqUrl,
+			p.Res_Desc AS systemType
+		FROM
+			t_privilege_res p 	
+		LEFT JOIN t_role_privilege_res trpr
+			ON trpr.Privilege_Res_Id = p.Privilege_Res_Id
+			AND p.State_CD = '1'
+			<if test="systemPlatformCD != null and systemPlatformCD != ''">
+			AND p.System_Platform_CD = #{systemPlatformCD}
+			</if>
+			AND trpr.State_CD = '1'
+		LEFT JOIN t_role r
+			ON r.Role_Id = trpr.Role_Id
+			AND r.State_CD= '1'
+		LEFT JOIN t_group_role tgr
+			ON tgr.Role_Id = r.Role_Id
+			AND tgr.State_CD = '1'
+		LEFT JOIN t_user_role_instance uri
+			ON uri.Group_Id = tgr.Group_Id
+			AND uri.State_CD = '1'
+		LEFT JOIN t_system_user u
+			ON u.SYSTEM_USER_ID = uri.SYSTEM_USER_ID
+			AND u.State_CD = '1'
+		WHERE 
+			u.User_Name = #{userName}
+	</select>    
+  
+</mapper>

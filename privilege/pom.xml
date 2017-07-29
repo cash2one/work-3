@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+    http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.trust.privilege</groupId>
+	<artifactId>privilege</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+			
+	<modules>
+		<module>privilege/test</module>
+		<module>privilege/web</module>
+		<module>privilege/core</module>
+		<module>privilege/facade</module>
+		<module>privilege/privilege-endpoint</module>
+	</modules>
+
+	<properties>
+		<java.version>1.7</java.version>
+		<project.encoding>UTF-8</project.encoding>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.encoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<encoding>${project.encoding}</encoding>
+				</configuration>
+			</plugin>
+			<!--上传源代码通过 mvn 的 deploy -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.0.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+	<dependencyManagement>
+		<dependencies>
+			<!-- slite 依赖 -->
+			<dependency>
+				<groupId>com.alipay.sofa</groupId>
+				<artifactId>slite-dependencies</artifactId>
+				<version>1.1.1</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+
+			<!-- 本项目中所有子模块 -->
+			<dependency>
+				<groupId>com.trust.privilege</groupId>
+				<artifactId>privilege-web</artifactId>
+				<!-- web 模块会打包成一个war 包 -->
+				<type>war</type>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.trust.privilege</groupId>
+				<artifactId>privilege-endpoint</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.trust.privilege</groupId>
+				<artifactId>privilege-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.trust.privilege</groupId>
+				<artifactId>privilege-facade</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<!-- ORM 框架 -->
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis</artifactId>
+				<version>3.3.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-dbcp</groupId>
+				<artifactId>commons-dbcp</artifactId>
+				<version>1.3</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-pool</groupId>
+				<artifactId>commons-pool</artifactId>
+				<version>1.3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis-spring</artifactId>
+				<version>1.2.3</version>
+			</dependency>
+
+			<!--sql depend -->
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>5.1.18</version>
+			</dependency>
+
+			<!-- 测试框架 -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.12</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

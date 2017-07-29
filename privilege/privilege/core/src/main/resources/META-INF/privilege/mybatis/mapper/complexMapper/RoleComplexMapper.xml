@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.complexMapper.RoleComplexMapper" >
+
+<!-- 根据角色Id查询角色下的页面资源-->
+	<select id="getAllPrivilegeResByRoleId" parameterType="java.lang.String" resultType="hashMap">
+		SELECT 
+			tpr.Privilege_Res_Id privilegeResId,
+			tpr.Res_Name resName,
+			trpr.State_Type stateType
+		FROM
+			t_role_privilege_res trpr
+		LEFT JOIN t_privilege_res tpr 
+			ON trpr.Privilege_Res_Id = tpr.Privilege_Res_Id
+		WHERE 
+			trpr.Role_Id = #{roleId} 
+			AND tpr.State_Cd ='1'
+	</select>  
+ 
+<!-- 多条件查询角色信息 -->
+	<select id="getAllRoles" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		SELECT 
+			DISTINCT
+				tr.Role_Id roleId,
+				tr.Role_Name roleName,
+				tr.Role_Desc roleDesc,
+				tr.State_CD stateCd,
+				DATE_FORMAT(tr.Create_Dt, '%Y-%m-%d') createDt,
+				tspc.System_Platform_Name systemPlatformName,
+				tspc.System_Platform_Cd systemPlatformCd,
+				tsu.User_Name userName
+		FROM
+			t_user_role_instance turi
+		LEFT JOIN t_group_role tgr 
+			ON turi.Group_Id = tgr.Group_Id
+		INNER JOIN t_role tr 
+			ON tgr.Role_Id = tr.Role_Id
+		LEFT JOIN t_system_platform_code tspc 
+			ON tr.System_Platform_CD = tspc.System_Platform_CD
+		LEFT JOIN t_system_user tsu 
+			ON turi.SYSTEM_USER_ID = tsu.SYSTEM_USER_ID
+		WHERE
+			tsu.User_Name = #{userName}
+		<if test="roleName!=null and roleName!=''">
+			 AND tr.Role_Name LIKE CONCAT('%',#{roleName},'%')
+		</if>
+		<if test="systemPlatformName!=null and systemPlatformName!=''">
+			 AND tspc.System_Platform_Name LIKE CONCAT('%',#{systemPlatformName},'%')
+		</if>
+		<if test="systemPlatformCd!=null and systemPlatformCd!='' and systemPlatformCd!='undefined' ">
+			 AND tspc.System_Platform_Cd = #{systemPlatformCd}
+		</if>
+		<if test="stateCd!=null and stateCd!=''">
+			AND tr.State_CD = #{stateCd}
+		</if>
+	</select>  
+  
+<!-- 根据创建人姓名查询角色，超级管理员身份 -->
+	<select id="getAllRolesByCreateUserId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+  		SELECT DISTINCT
+			tr.Role_Id roleId,
+			tr.Role_Name roleName,
+			tr.Role_Desc roleDesc,
+			tr.State_CD stateCd,
+			DATE_FORMAT(  tr.Create_Dt,'%Y-%m-%d') createDt,
+			tspc.System_Platform_Name systemPlatformName,
+			tspc.System_Platform_Cd systemPlatformCd,
+			tsu.User_Name userName
+		FROM 
+			t_role tr
+			LEFT JOIN t_system_platform_code tspc ON tr.System_Platform_CD = tspc.System_Platform_CD
+			LEFT JOIN t_system_user tsu ON tsu.SYSTEM_USER_ID = tr.Create_User_id
+		WHERE 1=1
+			<if test="roleName!=null and roleName!=''">
+			 	AND tr.Role_Name LIKE CONCAT('%',#{roleName},'%')
+			</if>
+			<if test="systemPlatformName!=null and systemPlatformName!=''">
+				 AND tspc.System_Platform_Name LIKE CONCAT('%',#{systemPlatformName},'%')
+			</if>
+			<if test="sysCdlist!=null and sysCdlist.size!=0">
+				 AND tspc.System_Platform_Cd IN
+				<foreach item="idItem" collection="sysCdlist" open="(" separator="," close=")">
+			  		#{idItem}
+			  	</foreach>
+			</if>
+			<if test="stateCd!=null and stateCd!=''">
+				 AND tr.State_CD = #{stateCd}
+			</if>
+	</select>  
+  
+<!-- 根据角色Id查询角色下的菜单 -->
+	<select id="getAllMemusByRoleId" parameterType="java.lang.String" resultType="hashmap">
+		SELECT
+			m.Menu_Id menuId,
+	 	    m.Menu_Name menuName,
+	 	    mr.State_Type stateType
+		FROM
+  			t_menu_role mr 
+  		LEFT JOIN t_menu m 
+  			ON mr.Menu_Id = m.Menu_Id
+  		WHERE 
+  			mr.Role_Id=#{roleId} AND m.State_Cd ='1'
+	</select>  
+  
+<!-- 通过用户名和系统查询到当前系统该用户所拥有的用户组中的角色 -->
+	<select id="selectRoleByUserName" parameterType="map" resultType="map">
+		SELECT 
+	  	 	DISTINCT
+			    r.Role_Id AS roleId,
+			    r.Role_Name AS roleName 
+	  	FROM
+	    	t_user_role_instance uri 
+			LEFT JOIN t_user_group tug  
+				ON uri.group_id = tug.group_id 
+			LEFT JOIN  t_group_role tgr
+				ON tug.group_id = tgr.Group_Id
+			INNER JOIN t_role r 
+				ON r.Role_Id = tgr.Role_Id 
+			INNER JOIN t_system_user u 
+	      		ON uri.`SYSTEM_USER_ID` = u.`SYSTEM_USER_ID` 
+	  		WHERE 
+	  			1=1
+	  			<if test="userName != null and userName != ''">
+	 				 AND u.`User_Name` =#{userName} 
+	  			</if>
+	  			<if test="userId != null and userId != ''">
+	  				AND u.`SYSTEM_USER_ID` = #{userId}
+	  			</if>
+	    		<if test="stateCd != null and stateCd != ''">
+		     		AND r.`State_CD` = #{stateCd} 
+	     		</if>
+   				<if test="systemPlatformCd != null and systemPlatformCd != ''">
+			   		AND r.`System_Platform_CD` =#{systemPlatformCd} 
+	  			</if>
+    </select>  
+  
+<!-- 查询该系统下所有的角色 -->  
+	<select id="selectOptRoleBySuperAdmin" resultType="map">
+		SELECT DISTINCT 
+			r.`Role_Name` AS roleName,
+	  		r.`Role_Id` AS roleId 
+		FROM
+	  		t_role r 
+		WHERE 
+			r.`State_CD` = '1' 
+		<if test="systemId != null" >
+	 		and r.`System_Platform_CD`=#{systemId}
+		</if>
+	</select>
+
+<!-- 通过角色名和系统CD获取该角色在本系统中拥有的角色(此用户创建的角色，用户角色实例表中的role_id) -->  
+	<select id="selectUserCreateRoleByUserName"  parameterType="map" resultType="map">
+		SELECT 
+			DISTINCT
+			r.Role_Id AS roleId,
+			r.Role_Name AS roleName,
+			r.Role_Desc roleDesc,
+			r.State_CD stateCd,
+			DATE_FORMAT(r.Create_Dt, '%Y-%m-%d') createDt,
+			tspc.System_Platform_Name systemPlatformName,
+			tspc.System_Platform_Cd systemPlatformCd
+		FROM
+		t_role r
+		LEFT JOIN t_system_platform_code tspc 
+			ON r.System_Platform_CD = tspc.System_Platform_CD
+		WHERE
+			r.Role_Id IN (
+				SELECT
+					Role_Id
+				FROM
+					t_user_role_instance uri
+				LEFT JOIN t_system_user u ON u.system_user_id = uri.system_user_id
+				WHERE
+					u.User_Name = #{userName}
+			)
+		<if test="stateCd != null and stateCd != ''">
+		   	AND r.`State_CD` = #{stateCd} 
+	    </if>
+	    <if test="systemPlatformCd != null and systemPlatformCd != ''">
+		    AND r.`System_Platform_CD` =#{systemPlatformCd} 
+	  	</if>
+	</select>
+  
+<!-- 为角色插入多个菜单资源 -->  
+	<insert id="addManyMenuToRole">
+  		INSERT INTO t_menu_role(Menu_Id,Role_Id,State_Type,State_CD,Create_Dt) VALUES
+  		
+  		<foreach item="idItem" collection="list" index="index" separator=",">
+  			(#{idItem},#{roleId},'1',#{stateCd},NOW())
+  		</foreach>
+  	</insert>
+	
+</mapper>

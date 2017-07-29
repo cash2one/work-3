@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.complexMapper.MenuComplexMapper" >
+
+<!-- 基本resultMap -->  
+	<resultMap id="BaseResultMap" type="com.trust.privilege.model.complex.MenuDo" >
+	    <id column="Menu_Id" property="menuId" jdbcType="VARCHAR" />
+	    <result column="System_Platform_CD" property="systemPlatformCd" jdbcType="VARCHAR" />
+	    <result column="Menu_Name" property="menuName" jdbcType="VARCHAR" />
+	    <result column="Menu_Desc" property="menuDesc" jdbcType="VARCHAR" />
+	    <result column="Reqeust_Methed" property="reqeustMethed" jdbcType="VARCHAR" />
+	    <result column="URL" property="url" jdbcType="VARCHAR" />
+	    <result column="Parent_Id" property="parentId" jdbcType="VARCHAR" />
+	    <result column="Menu_Level" property="menuLevel" jdbcType="VARCHAR" />
+	    <result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+	    <result column="Update_Dt" property="updateDt" jdbcType="TIMESTAMP" />
+	    <result column="Show_Order" property="showOrder" jdbcType="VARCHAR" />
+	    <result column="Create_User_Id" property="createUserId" jdbcType="VARCHAR" />
+	    <result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+	    <result column="stateType" property="stateType" jdbcType="VARCHAR" />
+	</resultMap>
+	
+<!-- 基本Column -->	
+	<sql id="Base_Column" >
+    	m.Menu_Id, m.System_Platform_CD, m.Menu_Name, m.Menu_Desc, m.Reqeust_Methed, m.URL, m.Parent_Id, 
+    	m.Menu_Level, m.Create_Dt, m.Update_Dt, m.Show_Order, m.Create_User_Id, m.State_CD
+    </sql>
+	
+<!-- 多条件查询菜单 -->
+	<select id="getAllMenus" parameterType="hashmap" resultType="java.util.HashMap">
+		SELECT DISTINCT
+			tm.Menu_Id menuId,
+			tm.Menu_Name menuName, 
+			tm.URL url,
+			tm.State_CD stateCd,
+			tm.Menu_Desc menuDesc,
+			tm.Menu_Level menuLevel,
+			tm.Parent_Id parentId,
+		 	tmm.Menu_Name parentMenuName,
+			tm.Show_Order showOrder,
+			tsu.User_Name userName,
+			DATE_FORMAT(  tm.Create_Dt,'%Y-%m-%d') createDt,
+			tspc.System_Platform_Name systemPlatformName,
+			tspc.System_Platform_Cd systemPlatformCd
+		FROM 
+			t_menu tm
+		LEFT JOIN t_system_platform_code tspc ON tm.System_Platform_CD = tspc.System_Platform_CD
+		LEFT JOIN t_menu_role tmr ON tmr.Menu_Id = tm.Menu_Id
+		LEFT JOIN t_group_role tgr ON tgr.Role_Id = tmr.Role_Id
+		LEFT JOIN t_user_role_instance turi ON turi.Group_Id = tgr.Group_Id
+		LEFT JOIN t_system_user tsu ON tsu.SYSTEM_USER_ID = turi.SYSTEM_USER_ID
+		LEFT JOIN t_menu tmm ON tmm.Menu_Id = tm.Parent_Id
+		WHERE 
+			tsu.User_Name =	#{userName}
+		<if test="menuName!=null and menuName!=''">
+			AND tm.Menu_Name LIKE
+			CONCAT('%',#{menuName},'%')
+		</if>
+		<if test="systemPlatformName!=null and systemPlatformName!=''">
+			AND tspc.System_Platform_Name Like
+			CONCAT('%',#{systemPlatformName},'%')
+		</if>
+		<if test="stateCd!=null and stateCd!=''">
+			AND tm.State_Cd = #{stateCd}
+		</if>
+			ORDER BY tspc.System_Platform_Cd,tm.Show_Order
+	</select>
+	
+<!-- 超级管理员身份查询所有的菜单 -->
+	<select id="getAllMenusBySuperAdmin" parameterType="hashmap" resultType="java.util.HashMap">
+  		SELECT 
+  		DISTINCT
+			tm.Menu_Id menuId,
+			tm.Menu_Name menuName, 
+			tm.URL url,
+			tm.State_CD stateCd,
+			tm.Menu_Desc menuDesc,
+			tm.Menu_Level menuLevel,
+			tm.Parent_Id parentId,
+			tmm.Menu_Name parentMenuName,
+			tm.Show_Order showOrder,
+			tsu.User_Name userName,
+			DATE_FORMAT(  tm.Create_Dt,'%Y-%m-%d') createDt,
+			tspc.System_Platform_Name systemPlatformName,
+			tspc.System_Platform_Cd systemPlatformCd
+		FROM 
+			t_menu tm
+		LEFT JOIN t_system_user tsu 
+			ON tm.Create_User_Id = tsu.User_Name
+		LEFT JOIN t_menu tmm 
+			ON tmm.Menu_Id = tm.Parent_Id
+		LEFT JOIN t_system_platform_code tspc 
+			ON tm.System_Platform_CD = tspc.System_Platform_CD 
+		WHERE 
+			1=1 
+			<if test="systemPlatformCd!=null and systemPlatformCd!=''">
+				AND tspc.System_Platform_CD = #{systemPlatformCd}
+			</if>
+			<if test="systemPlatformName!=null and systemPlatformName!=''">
+				AND tspc.System_Platform_Name Like
+				CONCAT('%',#{systemPlatformName},'%')
+			</if>
+			<if test="menuName!=null and menuName!=''">
+				AND tm.Menu_Name LIKE
+				CONCAT('%',#{menuName},'%')
+			</if>
+			<if test="stateCd!=null and stateCd!=''">
+				AND tm.State_Cd = #{stateCd}
+			</if>
+				ORDER BY tspc.System_Platform_Cd,tm.Show_Order
+	</select>	
+	
+<!-- 根据用户名，系统CD，查询菜单  -->
+	<select id="selectSysMenu" parameterType="map" resultMap="BaseResultMap">
+		SELECT 
+			DISTINCT
+			m.Menu_Id,
+			m.Menu_Name,
+			m.Parent_Id,
+			m.Show_Order,
+			m.URL
+		FROM 
+			t_menu m 
+		LEFT JOIN t_menu_role tmr
+			ON tmr.Menu_Id = m.Menu_Id
+		LEFT JOIN t_group_role tgr
+			ON tgr.Role_Id = tmr.Role_Id
+		LEFT JOIN t_user_role_instance uri
+			ON uri.Group_Id = tgr.Group_Id
+		LEFT JOIN t_system_user u
+			ON u.SYSTEM_USER_ID = uri.SYSTEM_USER_ID
+		WHERE
+			u.User_Name= #{userName}
+		AND m.State_CD = '1'
+		<if test="systemPlatfromCD != null and systemPlatfromCD != ''">
+			AND m.System_Platform_CD =#{systemPlatfromCD}  
+		</if>
+			ORDER BY m.Show_Order  
+	</select>
+	
+<!-- 根据系统CD查询菜单 -->      
+	<select id="allMenuBySys" parameterType="string" resultMap="BaseResultMap">
+		SELECT 
+		DISTINCT 
+	    	m.`Menu_Name`,
+		    m.`Menu_Id`,
+		    m.`Menu_Name`,
+		    m.`Parent_Id`,
+		    m.`Show_Order`,
+		    m.`URL` 
+		FROM
+	  		t_menu m 
+		WHERE 
+			m.`System_Platform_CD` = #{systemId} 
+	  	AND 
+	  		m.`State_CD` = '1' 
+	  	ORDER BY m.`Show_Order`
+	</select>	
+		
+<!-- 超级管理员查询父级菜单 -->
+  <select id="getAllParentMenusBySuperAdmin" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+  		SELECT DISTINCT
+			tm.Menu_Id menuId,
+			tm.Menu_Name menuName
+		FROM t_menu tm
+		WHERE 1=1 
+		<if test="systemPlatformCd!=null and systemPlatformCd!=''">
+			AND tm.System_Platform_CD = #{systemPlatformCd}
+		</if>
+		<if test="stateCd!=null and stateCd!=''">
+			AND tm.State_Cd = #{stateCd}
+		</if>
+		<if test="menuIdList!=null and menuIdList.size!=0">
+			AND tm.Menu_Id NOT IN
+			<foreach item="idItem" collection="menuIdList" open="(" separator="," close=")">
+  				#{idItem}
+  			</foreach>
+		</if>
+		ORDER BY tm.Show_Order
+   </select>	
+	
+<!-- 非超管查询父级菜单 -->
+	<select id="getAllParentMenus" parameterType="hashmap" resultType="java.util.HashMap">
+		SELECT DISTINCT
+			tm.Menu_Id menuId,
+			tm.Menu_Name menuName
+		FROM 
+			t_user_role_instance turi
+			INNER JOIN t_menu_role tmr ON turi.Role_Id = tmr.Role_Id
+			INNER JOIN t_menu tm ON tm.Menu_Id = tmr.Menu_Id 
+			WHERE turi.SYSTEM_USER_ID = (select SYSTEM_USER_ID from t_system_user where User_Name =#{userName})
+			<if test="systemPlatformCd!=null and systemPlatformCd!=''">
+				AND tm.System_Platform_CD = #{systemPlatformCd}
+			</if>
+			<if test="stateCd!=null and stateCd!=''">
+				AND tm.State_Cd = #{stateCd}
+			</if>
+		AND tm.Menu_Id NOT IN
+		<foreach item="idItem" collection="menuIdList" index="index" open="(" separator="," close=")">
+  			#{idItem}
+  		</foreach>
+		ORDER BY tm.Show_Order
+	</select>	
+	
+<!-- 通过用户名和系统CD获取菜单，用于portal首页数据渲染 -->	
+	<select id="selectSysMenuByUserName" parameterType="string" resultMap="BaseResultMap">
+		SELECT DISTINCT 
+	  		m.`Menu_Name`,
+		  	m.`Menu_Id`,
+		  	m.`Parent_Id`,
+		  	m.`Show_Order`,
+		 	m.`URL`,
+		  	mr.`State_Type` stateType
+		FROM
+	  		t_menu m 
+	  	INNER JOIN t_menu_role mr 
+	    	ON mr.Menu_Id = m.Menu_Id 
+	   		AND mr.`State_CD` = '1' 
+	    	AND m.`System_Platform_CD` = #{systemId}
+		INNER JOIN t_role r 
+	    	ON mr.`Role_Id` = r.ROLE_ID 
+		LEFT JOIN t_group_role tgr 
+			ON tgr.Role_Id = r.Role_Id
+	  	INNER JOIN t_user_role_instance uri 
+	    	ON tgr.Group_Id = uri.Group_Id
+	  	INNER JOIN t_system_user u 
+	    	ON u.SYSTEM_USER_ID = uri.SYSTEM_USER_ID 
+	    	AND u.`User_Name` = #{userName}
+		WHERE 
+			m.`State_CD` = '1' 
+		ORDER BY m.`Show_Order` 
+	</select>	
+	
+<!-- 根据菜单Id得到拥有此菜单的角色 -->
+	<select id="getRolesByMenuId" resultType="java.lang.String">
+  		SELECT DISTINCT 
+  			Role_Name 
+  		FROM 
+  			t_menu_role tmr 
+		LEFT JOIN t_role tr 
+			ON tmr.Role_Id = tr.Role_Id  
+		WHERE 
+			tmr.Menu_Id = #{menuId} 
+	</select>	
+
+</mapper>

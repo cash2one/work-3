@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.complexMapper.UserRoleInstanceDao">
+<resultMap id="BaseResultMap" type="com.trust.privilege.model.UserRoleInstance" >
+    <id column="Inst_ID" property="instId" jdbcType="VARCHAR" />
+    <result column="SYSTEM_USER_ID" property="systemUserId" jdbcType="VARCHAR" />
+    <result column="Role_Id" property="roleId" jdbcType="VARCHAR" />
+    <result column="Group_Id" property="groupId" jdbcType="VARCHAR" />
+    <result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+    <result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+    <result column="Reserve1" property="reserve1" jdbcType="VARCHAR" />
+    <result column="Reserve2" property="reserve2" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="baseColumn">
+   Inst_ID, SYSTEM_USER_ID, Role_Id, Group_Id, Create_Dt
+  </sql>
+  <!-- 查找用户组中是否存在用户 -->
+ <select id="countUserInGroup" resultType="java.lang.Integer" parameterType="string">
+	  SELECT 
+	  COUNT(1) 
+	FROM
+	  t_user_role_instance turi 
+	  INNER JOIN t_system_user tu 
+	    ON turi.`SYSTEM_USER_ID` = tu.system_user_id 
+	WHERE turi.`Group_Id` = #{groupId,jdbcType=VARCHAR} 
+ </select>
+ <!-- 新建角色时，为新建角色添加用户 -->
+ <insert id="addRoleToUser">
+ 	insert into t_user_role_instance 
+ 	(Inst_ID, SYSTEM_USER_ID, Role_Id, Group_Id, State_CD, Create_Dt)
+ 	values
+ 	<foreach item="idItem" collection="list" index="index" separator=",">
+  		(#{insUUID},#{userId},#{roleId},#{idItem},#{stateCd},NOW())
+  	</foreach>
+ </insert>
+  <insert id="addRoleToUserNoGroup">
+ 	insert into t_user_role_instance 
+ 	(Inst_ID, SYSTEM_USER_ID, Role_Id,State_CD, Create_Dt)
+ 	values 
+ 	(#{insUUID},#{userId},#{roleId},#{stateCd},NOW())
+  		
+ </insert>
+ <!-- 查看角色是否有用户使用 -->
+ <select id="countRoleInUse" parameterType="string" resultType="java.lang.Integer">
+	 SELECT 
+	  COUNT(1) 
+	FROM
+	  t_user_role_instance uri 
+	  INNER JOIN t_system_user u 
+	    ON uri.`SYSTEM_USER_ID` = u.SYSTEM_USER_ID 
+	WHERE uri.`Role_Id` = #{roleId} 
+ </select>
+ <select id="countRoleInGroupInUse" parameterType="map" resultType="java.lang.Integer">
+	SELECT 
+	  COUNT(1) 
+	FROM
+	  t_user_role_instance uri 
+	  INNER JOIN t_system_user u 
+	    ON uri.`SYSTEM_USER_ID` = u.SYSTEM_USER_ID 
+	WHERE uri.`Role_Id` = #{roleId} AND uri.GROUP_ID=#{groupId} 
+ </select>
+ <select id="selectRoleInGroup" parameterType="string" resultType="string">
+	SELECT 
+	  gr.`Role_Id` 
+	FROM
+	  t_group_role gr 
+	WHERE gr.`Group_Id` = #{groupId} 
+ </select>
+ 
+ <!-- 根据用户id查询用户角色实例表 -->
+ <select id="selectUserRoleInstanceBySysUserId" parameterType="String" resultMap="BaseResultMap">
+ 	select 
+	<include refid="baseColumn" />
+	from t_user_role_instance
+	where SYSTEM_USER_ID=#{value}
+ </select>
+ 
+</mapper>

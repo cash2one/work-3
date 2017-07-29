@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.RoleMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.Role" >
+    <id column="Role_Id" property="roleId" jdbcType="VARCHAR" />
+    <result column="System_Platform_CD" property="systemPlatformCd" jdbcType="VARCHAR" />
+    <result column="Role_Name" property="roleName" jdbcType="VARCHAR" />
+    <result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+    <result column="Update_Dt" property="updateDt" jdbcType="TIMESTAMP" />
+    <result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+    <result column="Role_Desc" property="roleDesc" jdbcType="VARCHAR" />
+    <result column="Create_User_id" property="createUserId" jdbcType="VARCHAR" />
+    <result column="Role_Level" property="roleLevel" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    Role_Id, System_Platform_CD, Role_Name, Create_Dt, Update_Dt, State_CD, Role_Desc, 
+    Create_User_id, Role_Level
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.trust.privilege.model.RoleExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_role
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_role
+    where Role_Id = #{roleId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_role
+    where Role_Id = #{roleId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.trust.privilege.model.RoleExample" >
+    delete from t_role
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.trust.privilege.model.Role" >
+    insert into t_role (Role_Id, System_Platform_CD, Role_Name, 
+      Create_Dt, Update_Dt, State_CD, 
+      Role_Desc, Create_User_id, Role_Level
+      )
+    values (#{roleId,jdbcType=VARCHAR}, #{systemPlatformCd,jdbcType=VARCHAR}, #{roleName,jdbcType=VARCHAR}, 
+      #{createDt,jdbcType=TIMESTAMP}, #{updateDt,jdbcType=TIMESTAMP}, #{stateCd,jdbcType=VARCHAR}, 
+      #{roleDesc,jdbcType=VARCHAR}, #{createUserId,jdbcType=VARCHAR}, #{roleLevel,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.trust.privilege.model.Role" >
+    insert into t_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        Role_Id,
+      </if>
+      <if test="systemPlatformCd != null" >
+        System_Platform_CD,
+      </if>
+      <if test="roleName != null" >
+        Role_Name,
+      </if>
+      <if test="createDt != null" >
+        Create_Dt,
+      </if>
+      <if test="updateDt != null" >
+        Update_Dt,
+      </if>
+      <if test="stateCd != null" >
+        State_CD,
+      </if>
+      <if test="roleDesc != null" >
+        Role_Desc,
+      </if>
+      <if test="createUserId != null" >
+        Create_User_id,
+      </if>
+      <if test="roleLevel != null" >
+        Role_Level,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="roleId != null" >
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="systemPlatformCd != null" >
+        #{systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createDt != null" >
+        #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDt != null" >
+        #{updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stateCd != null" >
+        #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDesc != null" >
+        #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleLevel != null" >
+        #{roleLevel,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.trust.privilege.model.RoleExample" resultType="java.lang.Integer" >
+    select count(*) from t_role
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_role
+    <set >
+      <if test="record.roleId != null" >
+        Role_Id = #{record.roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.systemPlatformCd != null" >
+        System_Platform_CD = #{record.systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.roleName != null" >
+        Role_Name = #{record.roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDt != null" >
+        Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateDt != null" >
+        Update_Dt = #{record.updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.stateCd != null" >
+        State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.roleDesc != null" >
+        Role_Desc = #{record.roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserId != null" >
+        Create_User_id = #{record.createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.roleLevel != null" >
+        Role_Level = #{record.roleLevel,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_role
+    set Role_Id = #{record.roleId,jdbcType=VARCHAR},
+      System_Platform_CD = #{record.systemPlatformCd,jdbcType=VARCHAR},
+      Role_Name = #{record.roleName,jdbcType=VARCHAR},
+      Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      Update_Dt = #{record.updateDt,jdbcType=TIMESTAMP},
+      State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      Role_Desc = #{record.roleDesc,jdbcType=VARCHAR},
+      Create_User_id = #{record.createUserId,jdbcType=VARCHAR},
+      Role_Level = #{record.roleLevel,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trust.privilege.model.Role" >
+    update t_role
+    <set >
+      <if test="systemPlatformCd != null" >
+        System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="roleName != null" >
+        Role_Name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="createDt != null" >
+        Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDt != null" >
+        Update_Dt = #{updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stateCd != null" >
+        State_CD = #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDesc != null" >
+        Role_Desc = #{roleDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        Create_User_id = #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleLevel != null" >
+        Role_Level = #{roleLevel,jdbcType=INTEGER},
+      </if>
+    </set>
+    where Role_Id = #{roleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trust.privilege.model.Role" >
+    update t_role
+    set System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR},
+      Role_Name = #{roleName,jdbcType=VARCHAR},
+      Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      Update_Dt = #{updateDt,jdbcType=TIMESTAMP},
+      State_CD = #{stateCd,jdbcType=VARCHAR},
+      Role_Desc = #{roleDesc,jdbcType=VARCHAR},
+      Create_User_id = #{createUserId,jdbcType=VARCHAR},
+      Role_Level = #{roleLevel,jdbcType=INTEGER}
+    where Role_Id = #{roleId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	
+    <!--这个需要放在前面，不会还会报错的,配置日志打印-->
+    <!-- 全局配置参数 -->
+    <settings>
+        <setting name="logImpl" value="LOG4J"/>
+    </settings>
+	
+    <!-- 别名的基础包，在该包下的会自动增加别名：bean的首字母小写-->
+    <typeAliases>
+    	<package name="com.trust.privilege.model"/>
+    	<package name="com.trust.privilege.model.complex"/>
+    </typeAliases>
+	<plugins>
+      <!-- <plugin interceptor="com.xinmei.etheta.common.page.MybatisInterceptor" /> -->
+      <plugin interceptor="com.trust.privilege.common.page.PageHelper" />
+    </plugins>
+</configuration>

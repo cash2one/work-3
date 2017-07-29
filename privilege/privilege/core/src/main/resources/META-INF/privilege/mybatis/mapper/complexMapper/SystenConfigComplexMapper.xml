@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.complexMapper.SystemConfigComplexMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.SystemConfig" >
+   <id column="System_Config_Id" property="systemConfigId" jdbcType="VARCHAR" />
+    <result column="Privilege_Res_Id" property="privilegeResId" jdbcType="VARCHAR" />
+    <result column="User_Name" property="userName" jdbcType="VARCHAR" />
+    <result column="Resource_Type" property="resourceType" jdbcType="VARCHAR" />
+    <result column="Show_Order" property="showOrder" jdbcType="INTEGER" />
+    <result column="Resource_Name" property="resourceName" jdbcType="VARCHAR" />
+    <result column="Picture_Path" property="picturePath" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+  </resultMap>
+<!-- 通过用户名查询该用户常用功能列表（portal门户） -->  
+	<select id="getAllOffenUserOption" resultMap="BaseResultMap" parameterType="java.lang.String">
+  		SELECT 
+	  		tsc.System_Config_Id, 
+	  		tsc.User_Name, 
+	  		tsc.Resource_Type, 
+	  		tsc.Privilege_Res_Id, 
+	  		tsc.Show_Order,
+	  		tsc.Resource_Name,
+	  		tsc.Picture_Path,
+	  		tsc.URL
+  		FROM 
+  			t_system_config tsc 
+  		WHERE 
+  			tsc.User_Name = #{userName} 
+  		ORDER BY 
+  			tsc.Show_Order desc
+	</select>
+</mapper>

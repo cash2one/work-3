@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+    http://maven.apache.org/maven-v4_0_0.xsd">
+<!-- Maven中，父项目信息 -->    
+	<parent> 
+		<groupId>com.trust.privilege</groupId>
+		<artifactId>privilege</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+<!-- 版本 -->	
+	<modelVersion>4.0.0</modelVersion>
+<!-- 当前系统名称 -->	
+	<artifactId>privilege-web</artifactId>
+<!-- 打包成 war -->
+	<packaging>war</packaging>
+
+	<dependencies>
+<!-- 注入Sofa-Rpc -->
+		<dependency>
+			<groupId>com.alipay.sofa</groupId>
+			<artifactId>slite-starter-rpc</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>jcl-over-slf4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+<!-- 注入SOFA扩展的Spring-Mvc -->
+		<dependency>
+			<groupId>com.alipay.sofa</groupId>
+			<artifactId>slite-starter-springmvc</artifactId>
+		</dependency>
+<!-- 注入本系统endpoint层 -->
+		<dependency>
+			<groupId>com.trust.privilege</groupId>
+			<artifactId>privilege-endpoint</artifactId>
+		</dependency>
+<!-- 注入core层 -->
+		<dependency>
+			<groupId>com.trust.privilege</groupId>
+			<artifactId>privilege-core</artifactId>
+		</dependency>
+<!-- 注入facade层 -->
+		<dependency>
+			<groupId>com.trust.privilege</groupId>
+			<artifactId>privilege-facade</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		
+	</dependencies>
+	
+
+	<build>
+		<!-- target 目录下 war 包 -->
+		<finalName>privilege</finalName>
+		<!-- <finalName>root</finalName> -->
+
+		<plugins>
+
+		<!-- 构建jetty容器 -->
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.1.16.v20140903</version>
+				<configuration>
+					<stopKey>foo</stopKey>
+					<stopPort>9999</stopPort>
+					<scanIntervalSeconds>5</scanIntervalSeconds>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.complexMapper.SystemPlatformComplexMapper" >
+
+<!-- 基本resultMap -->
+	<resultMap id="BaseResultMap" type="com.trust.privilege.model.SystemPlatform" >
+    	<id column="System_Platform_CD" property="systemPlatformCd" jdbcType="VARCHAR" />
+    	<result column="System_Platform_Name" property="systemPlatformName" jdbcType="VARCHAR" />
+    	<result column="System_Platform_Desc" property="systemPlatformDesc" jdbcType="VARCHAR" />
+    	<result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+   		<result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+   		<result column="Create_User_Id" property="createUserId" jdbcType="VARCHAR" />
+    	<result column="User_Name" property="userName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+<!-- 根据用户角色来查询该用户所拥有的系统 -->
+	<select id="selectSystemPlatform" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+ 		SELECT DISTINCT
+			tspc.System_Platform_CD systemPlatformCd,
+			tspc.System_Platform_Name systemPlatformName,
+			tspc.System_Platform_Desc systemPlatformDesc,
+			tspc.State_Cd stateCd,
+			tsu.User_Name userName,
+			DATE_FORMAT(tspc.Create_Dt, '%Y-%m-%d') createDt
+		FROM
+			t_system_platform_code tspc
+		LEFT JOIN t_role tr
+			ON tr.System_Platform_CD = tspc.System_Platform_CD
+		LEFT JOIN t_group_role tgr
+			ON tgr.Role_Id = tr.Role_Id
+		LEFT JOIN t_user_role_instance turi
+			ON turi.Group_Id = tgr.Group_Id
+		LEFT JOIN t_system_user tsu
+			ON tsu.SYSTEM_USER_ID = turi.SYSTEM_USER_ID
+		WHERE
+			tsu.User_Name = #{userName}
+			<if test="systemPlatformName!=null and systemPlatformName!=''">
+				AND tspc.System_Platform_Name LIKE CONCAT('%',#{systemPlatformName},'%') 
+			</if>
+			<if test="systemPlatformCd!=null and systemPlatformCd!=''">
+				AND tspc.System_Platform_Cd = #{systemPlatformCd}
+			</if>
+			<if test="stateCd!=null and stateCd!=''">
+				AND tspc.State_Cd = #{stateCd}
+			</if>								
+ 	</select>
+  
+<!-- 多条件查询系统列表，此方法目前用于超级管理员 --> 	
+ 	<select id="selectSystemPlatformByCreateUserId" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+ 		SELECT DISTINCT 
+	 		tspc.System_Platform_CD systemPlatformCd,
+			tspc.System_Platform_Name systemPlatformName,
+			tspc.System_Platform_Desc systemPlatformDesc,
+			tspc.State_Cd stateCd,
+			tsu.User_Name userName,
+			DATE_FORMAT(  tspc.Create_Dt,'%Y-%m-%d') createDt
+		FROM t_system_platform_code tspc
+			LEFT JOIN t_system_user tsu
+			ON tspc.Create_User_Id = tsu.User_Name
+		WHERE 1=1
+			<if test="stateCd != null and stateCd != ''">
+				AND tspc.State_Cd = #{stateCd}
+			</if>
+			<if test="systemPlatformName!=null and systemPlatformName!=''">
+				AND tspc.System_Platform_Name LIKE CONCAT('%',#{systemPlatformName},'%') 
+			</if>
+			<if test="systemPlatformCd!=null and systemPlatformCd!=''">
+				AND tspc.System_Platform_Cd = #{systemPlatformCd}
+			</if>
+ 	</select>
+
+<!-- 查询指定系统下的角色id集合 -->
+ 	<select id="getRoleIdsBySystemPlatformCd" parameterType="java.lang.String" resultType="java.lang.String">
+	 	SELECT Role_Id FROM t_role tr 
+		LEFT JOIN t_system_platform_code tspc 
+		ON tspc.System_Platform_CD = tr.System_Platform_CD  WHERE tspc.System_Platform_CD = #{systemPlatformCd}
+ 	</select> 	
+
+<!-- 修改多个角色的状态  -->
+ 	<update id="updateStateCdOfRoleIds">
+ 		UPDATE t_role SET State_CD = #{stateCd} WHERE Role_Id IN
+ 		<foreach item="idItem" collection="list" index="index" open="(" separator="," close=")">
+  			#{idItem}
+  		</foreach>
+ 	</update>
+ 
+<!--修改当前系统下的菜单状态 -->
+ 	<update id="updateMenuBySys">
+ 		UPDATE t_menu SET State_CD = #{stateCd} WHERE System_Platform_Cd = #{systemPlatformCd}
+ 	</update>
+
+<!-- 修改该系统下权限资源的状态 -->
+ 	<update id="updateResBySys">
+ 		UPDATE t_privilege_res SET State_CD = #{stateCd} WHERE System_Platform_Cd = #{systemPlatformCd}
+ 	</update>
+ 	
+<!-- 查询系统Id是否被角色关联 --> 	
+ 	<select id="selectRoleInSys" parameterType="string" resultType="java.lang.Integer" >
+      	SELECT COUNT(1) FROM t_role r WHERE r.`System_Platform_CD`=#{systemId}
+   	</select>
+
+<!-- 查询系统CD下是否拥有菜单 -->   
+   <select id="selectMenuInSys" parameterType="string" resultType="java.lang.Integer" >
+      SELECT COUNT(1) FROM t_menu m WHERE m.`System_Platform_CD`=#{systemId}
+   </select>
+
+<!-- 查询系统CD下是否拥有资源 -->   
+   <select id="selectPrivilegeInSys" parameterType="string" resultType="java.lang.Integer" >
+       SELECT COUNT(1) FROM t_privilege_res pr WHERE pr.`System_Platform_CD`=#{systemId}
+   </select>
+   
+<!-- 查询所有有效的系统信息 -->   
+	<select id="selectAllSys" resultType="map">
+		SELECT 
+		  sys.`System_Platform_Name` ,
+		  sys.`System_Platform_CD` 
+		FROM
+		  t_system_platform_code sys
+		WHERE 
+			sys.`State_CD`='1' 
+    </select>   
+   
+<!-- 通过当前操作人和用户组Id得到可操作系统 -->   
+	<select id="selectSysByUser" parameterType="string" resultType="map">	
+		SELECT 
+			DISTINCT
+			sys.System_Platform_Name,
+			sys.System_Platform_CD
+		FROM
+			t_system_platform_code sys
+		LEFT JOIN t_role r 
+			ON sys.System_Platform_CD = r.System_Platform_CD
+		LEFT JOIN t_group_role tgr 
+			ON tgr.Role_Id = r.Role_Id
+		LEFT JOIN t_user_role_instance uri 
+			ON uri.Group_Id = tgr.Group_Id
+		INNER JOIN t_system_user u 
+			ON uri.SYSTEM_USER_ID = u.SYSTEM_USER_ID
+		WHERE
+			u.User_Name = #{userName}
+		AND 
+			sys.State_CD = '1'
+		<if test="groupId != null">
+			UNION(
+				SELECT 
+					DISTINCT
+						sys.`System_Platform_Name`,
+						sys.`System_Platform_CD`
+					FROM
+	 					t_system_platform_code sys 
+	  				INNER JOIN t_role r 
+	    				ON sys.`System_Platform_CD` = r.`System_Platform_CD` AND sys.`State_CD`='1'
+	  				INNER JOIN t_group_role gr 
+	   					ON r.`Role_Id` = gr.`Role_Id` 
+	  				INNER JOIN t_user_group g 
+	   					ON gr.`Group_Id` = g.`Group_Id` 
+					WHERE 
+						g.`Group_Id` =#{groupId} 
+	  		)
+	 	</if>			
+	</select>
+	
+<!-- 通过用户组ID得到这个用户组所拥有的系统 -->   
+	<select id="selectSysByGroup" parameterType="string" resultType="map">
+    	SELECT DISTINCT 
+	 		sys.`System_Platform_CD` AS systemId,
+	  		sys.`System_Platform_Name` AS systemName 
+		FROM
+	  		t_system_platform_code sys 
+	  	INNER JOIN t_role r 
+	    	ON sys.`System_Platform_CD` = r.`System_Platform_CD` 
+	    	AND sys.`State_CD`='1'
+	  	INNER JOIN t_group_role gr 
+	    	ON r.`Role_Id` = gr.`Role_Id` 
+		WHERE 
+			gr.`Group_Id` =#{groupId} 
+	</select>
+   
+</mapper>

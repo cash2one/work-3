@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.PrivilegeResMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.PrivilegeRes" >
+    <id column="Privilege_Res_Id" property="privilegeResId" jdbcType="VARCHAR" />
+    <result column="Res_Type_CD" property="resTypeCd" jdbcType="VARCHAR" />
+    <result column="System_Platform_CD" property="systemPlatformCd" jdbcType="VARCHAR" />
+    <result column="Res_Name" property="resName" jdbcType="VARCHAR" />
+    <result column="Res_Desc" property="resDesc" jdbcType="VARCHAR" />
+    <result column="Req_Methed" property="reqMethed" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+    <result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+    <result column="Create_Date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="Update_Date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="Version" property="version" jdbcType="TIMESTAMP" />
+    <result column="Menu_Id" property="menuId" jdbcType="VARCHAR" />
+    <result column="Create_User_Id" property="createUserId" jdbcType="VARCHAR" />
+    <result column="Mark" property="mark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    Privilege_Res_Id, Res_Type_CD, System_Platform_CD, Res_Name, Res_Desc, Req_Methed, 
+    URL, State_CD, Create_Date, Update_Date, Version, Menu_Id, Create_User_Id, Mark
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.trust.privilege.model.PrivilegeResExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_privilege_res
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_privilege_res
+    where Privilege_Res_Id = #{privilegeResId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_privilege_res
+    where Privilege_Res_Id = #{privilegeResId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.trust.privilege.model.PrivilegeResExample" >
+    delete from t_privilege_res
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.trust.privilege.model.PrivilegeRes" >
+    insert into t_privilege_res (Privilege_Res_Id, Res_Type_CD, System_Platform_CD, 
+      Res_Name, Res_Desc, Req_Methed, 
+      URL, State_CD, Create_Date, 
+      Update_Date, Version, Menu_Id, 
+      Create_User_Id, Mark)
+    values (#{privilegeResId,jdbcType=VARCHAR}, #{resTypeCd,jdbcType=VARCHAR}, #{systemPlatformCd,jdbcType=VARCHAR}, 
+      #{resName,jdbcType=VARCHAR}, #{resDesc,jdbcType=VARCHAR}, #{reqMethed,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{stateCd,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{version,jdbcType=TIMESTAMP}, #{menuId,jdbcType=VARCHAR}, 
+      #{createUserId,jdbcType=VARCHAR}, #{mark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.trust.privilege.model.PrivilegeRes" >
+    insert into t_privilege_res
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="privilegeResId != null" >
+        Privilege_Res_Id,
+      </if>
+      <if test="resTypeCd != null" >
+        Res_Type_CD,
+      </if>
+      <if test="systemPlatformCd != null" >
+        System_Platform_CD,
+      </if>
+      <if test="resName != null" >
+        Res_Name,
+      </if>
+      <if test="resDesc != null" >
+        Res_Desc,
+      </if>
+      <if test="reqMethed != null" >
+        Req_Methed,
+      </if>
+      <if test="url != null" >
+        URL,
+      </if>
+      <if test="stateCd != null" >
+        State_CD,
+      </if>
+      <if test="createDate != null" >
+        Create_Date,
+      </if>
+      <if test="updateDate != null" >
+        Update_Date,
+      </if>
+      <if test="version != null" >
+        Version,
+      </if>
+      <if test="menuId != null" >
+        Menu_Id,
+      </if>
+      <if test="createUserId != null" >
+        Create_User_Id,
+      </if>
+      <if test="mark != null" >
+        Mark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="privilegeResId != null" >
+        #{privilegeResId,jdbcType=VARCHAR},
+      </if>
+      <if test="resTypeCd != null" >
+        #{resTypeCd,jdbcType=VARCHAR},
+      </if>
+      <if test="systemPlatformCd != null" >
+        #{systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="resName != null" >
+        #{resName,jdbcType=VARCHAR},
+      </if>
+      <if test="resDesc != null" >
+        #{resDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="reqMethed != null" >
+        #{reqMethed,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="stateCd != null" >
+        #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=TIMESTAMP},
+      </if>
+      <if test="menuId != null" >
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null" >
+        #{mark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.trust.privilege.model.PrivilegeResExample" resultType="java.lang.Integer" >
+    select count(*) from t_privilege_res
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_privilege_res
+    <set >
+      <if test="record.privilegeResId != null" >
+        Privilege_Res_Id = #{record.privilegeResId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resTypeCd != null" >
+        Res_Type_CD = #{record.resTypeCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.systemPlatformCd != null" >
+        System_Platform_CD = #{record.systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resName != null" >
+        Res_Name = #{record.resName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resDesc != null" >
+        Res_Desc = #{record.resDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqMethed != null" >
+        Req_Methed = #{record.reqMethed,jdbcType=VARCHAR},
+      </if>
+      <if test="record.url != null" >
+        URL = #{record.url,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stateCd != null" >
+        State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        Create_Date = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateDate != null" >
+        Update_Date = #{record.updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.version != null" >
+        Version = #{record.version,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.menuId != null" >
+        Menu_Id = #{record.menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserId != null" >
+        Create_User_Id = #{record.createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mark != null" >
+        Mark = #{record.mark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_privilege_res
+    set Privilege_Res_Id = #{record.privilegeResId,jdbcType=VARCHAR},
+      Res_Type_CD = #{record.resTypeCd,jdbcType=VARCHAR},
+      System_Platform_CD = #{record.systemPlatformCd,jdbcType=VARCHAR},
+      Res_Name = #{record.resName,jdbcType=VARCHAR},
+      Res_Desc = #{record.resDesc,jdbcType=VARCHAR},
+      Req_Methed = #{record.reqMethed,jdbcType=VARCHAR},
+      URL = #{record.url,jdbcType=VARCHAR},
+      State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      Create_Date = #{record.createDate,jdbcType=TIMESTAMP},
+      Update_Date = #{record.updateDate,jdbcType=TIMESTAMP},
+      Version = #{record.version,jdbcType=TIMESTAMP},
+      Menu_Id = #{record.menuId,jdbcType=VARCHAR},
+      Create_User_Id = #{record.createUserId,jdbcType=VARCHAR},
+      Mark = #{record.mark,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trust.privilege.model.PrivilegeRes" >
+    update t_privilege_res
+    <set >
+      <if test="resTypeCd != null" >
+        Res_Type_CD = #{resTypeCd,jdbcType=VARCHAR},
+      </if>
+      <if test="systemPlatformCd != null" >
+        System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="resName != null" >
+        Res_Name = #{resName,jdbcType=VARCHAR},
+      </if>
+      <if test="resDesc != null" >
+        Res_Desc = #{resDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="reqMethed != null" >
+        Req_Methed = #{reqMethed,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="stateCd != null" >
+        State_CD = #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        Create_Date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateDate != null" >
+        Update_Date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="version != null" >
+        Version = #{version,jdbcType=TIMESTAMP},
+      </if>
+      <if test="menuId != null" >
+        Menu_Id = #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        Create_User_Id = #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="mark != null" >
+        Mark = #{mark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Privilege_Res_Id = #{privilegeResId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trust.privilege.model.PrivilegeRes" >
+    update t_privilege_res
+    set Res_Type_CD = #{resTypeCd,jdbcType=VARCHAR},
+      System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR},
+      Res_Name = #{resName,jdbcType=VARCHAR},
+      Res_Desc = #{resDesc,jdbcType=VARCHAR},
+      Req_Methed = #{reqMethed,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR},
+      State_CD = #{stateCd,jdbcType=VARCHAR},
+      Create_Date = #{createDate,jdbcType=TIMESTAMP},
+      Update_Date = #{updateDate,jdbcType=TIMESTAMP},
+      Version = #{version,jdbcType=TIMESTAMP},
+      Menu_Id = #{menuId,jdbcType=VARCHAR},
+      Create_User_Id = #{createUserId,jdbcType=VARCHAR},
+      Mark = #{mark,jdbcType=VARCHAR}
+    where Privilege_Res_Id = #{privilegeResId,jdbcType=VARCHAR}
+  </update>
+</mapper>

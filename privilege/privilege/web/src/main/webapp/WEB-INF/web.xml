@@ -1,0 +1,130 @@
+<web-app id="WebApp_ID" version="2.4"
+         xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+  http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+    <display-name>Spring Web MVC Application</display-name>
+    
+<!-- 启动Spring-Mvc -->
+    <servlet>
+        <servlet-name>mvc-dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+        	<param-name>contextConfigLocation</param-name>
+        	<param-value>/WEB-INF/mvc-dispatcher-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+<!-- 映射路径 -->
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.js</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>*.css</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+<!-- 启动Spring监听 -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+<!-- 指定Spring Bean的配置文件所在目录 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/application-context.xml</param-value>
+    </context-param>
+<!--         
+============================ 单点退出开始 ===============================
+填写退出的url
+    <context-param>
+      <param-name>casServerLogoutUrl</param-name>
+      <param-value>https://sso.trustlife.com:8443/logout</param-value>
+    </context-param>
+该Listener用于监听单点退出操作
+    <listener>
+      <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+    </listener>
+
+该Filter用于单点退出操作    
+    <filter>
+      <filter-name>CAS Single Sign Out Filter</filter-name>
+      <filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+    </filter>
+	过滤根目录下所有的请求
+    <filter-mapping>
+      <filter-name>CAS Single Sign Out Filter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping> 
+ 
+============================ 单点退出结束 ===============================   
+
+============================ 单点登录开始 =============================== 
+该Filter负责用户的认证工作,即CAS Client接收到请求自动重定向到CAS Server进行认证
+  <filter>
+    <filter-name>CASFilter</filter-name>
+    <filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
+	初始化设置，CAS Client是不负责认证的，认证交给CAS Server完成
+    <init-param>
+    	<param-name>casServerLoginUrl</param-name>  
+      单点登录地址
+    	<param-value>https://sso.trustlife.com:8443/login</param-value>  
+    </init-param>
+	初始化设置，CAS Server返回TGC和ST的本应用位置
+    <init-param>
+      <param-name>serverName</param-name>
+      本地host做的域名
+      <param-value>http://portal.trustlife.com:8080</param-value> 
+    </init-param>
+  </filter>        
+    过滤根目录下的一切URL
+   	<filter-mapping>
+      <filter-name>CASFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>   
+    
+ 
+该Filter负责Ticket的校验工作   
+    <filter>
+      <filter-name>CAS Validation Filter</filter-name>
+      <filter-class>org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class>
+      初始化设置，CAS Server Url的前缀
+      <init-param>
+        <param-name>casServerUrlPrefix</param-name>
+        Cas Server SSL Url
+      	<param-value>https://sso.trustlife.com:8443</param-value>
+      </init-param>
+  	  初始化设置，CAS Server返回TGC和ST的本应用位置
+      <init-param>
+        <param-name>serverName</param-name>
+        本地host做的域名
+        <param-value>http://portal.trustlife.com:8080</param-value> 
+      </init-param>
+    </filter>
+过滤根目录下所有
+  	<filter-mapping>
+	    <filter-name>CAS Validation Filter</filter-name>
+	    <url-pattern>/*</url-pattern>
+    </filter-mapping>   
+    
+        
+该Filter可以通过AssertionHolder.getAssertion().getPricipal().getName()获取用户的登录名
+	<filter>
+		<filter-name>CAS Assertion Thread Local Filter</filter-name>
+		<filter-class>org.jasig.cas.client.util.AssertionThreadLocalFilter</filter-class>
+	</filter>
+	映射路径
+	<filter-mapping>
+		<filter-name>CAS Assertion Thread Local Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>   
+    
+ ============================ 单点登录结束 =============================== 
+
+ --></web-app>

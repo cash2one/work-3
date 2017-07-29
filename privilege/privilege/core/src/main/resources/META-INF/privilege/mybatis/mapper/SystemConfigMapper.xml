@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.SystemConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.SystemConfig" >
+    <id column="System_Config_Id" property="systemConfigId" jdbcType="VARCHAR" />
+    <result column="Privilege_Res_Id" property="privilegeResId" jdbcType="VARCHAR" />
+    <result column="User_Name" property="userName" jdbcType="VARCHAR" />
+    <result column="Resource_Type" property="resourceType" jdbcType="VARCHAR" />
+    <result column="Show_Order" property="showOrder" jdbcType="INTEGER" />
+    <result column="Resource_Name" property="resourceName" jdbcType="VARCHAR" />
+    <result column="Picture_Path" property="picturePath" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    System_Config_Id, Privilege_Res_Id, User_Name, Resource_Type, Show_Order, Resource_Name, 
+    Picture_Path, URL
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.trust.privilege.model.SystemConfigExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_system_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_system_config
+    where System_Config_Id = #{systemConfigId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_system_config
+    where System_Config_Id = #{systemConfigId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.trust.privilege.model.SystemConfigExample" >
+    delete from t_system_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.trust.privilege.model.SystemConfig" >
+    insert into t_system_config (System_Config_Id, Privilege_Res_Id, User_Name, 
+      Resource_Type, Show_Order, Resource_Name, 
+      Picture_Path, URL)
+    values (#{systemConfigId,jdbcType=VARCHAR}, #{privilegeResId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{resourceType,jdbcType=VARCHAR}, #{showOrder,jdbcType=INTEGER}, #{resourceName,jdbcType=VARCHAR}, 
+      #{picturePath,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.trust.privilege.model.SystemConfig" >
+    insert into t_system_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="systemConfigId != null" >
+        System_Config_Id,
+      </if>
+      <if test="privilegeResId != null" >
+        Privilege_Res_Id,
+      </if>
+      <if test="userName != null" >
+        User_Name,
+      </if>
+      <if test="resourceType != null" >
+        Resource_Type,
+      </if>
+      <if test="showOrder != null" >
+        Show_Order,
+      </if>
+      <if test="resourceName != null" >
+        Resource_Name,
+      </if>
+      <if test="picturePath != null" >
+        Picture_Path,
+      </if>
+      <if test="url != null" >
+        URL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="systemConfigId != null" >
+        #{systemConfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="privilegeResId != null" >
+        #{privilegeResId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null" >
+        #{resourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="showOrder != null" >
+        #{showOrder,jdbcType=INTEGER},
+      </if>
+      <if test="resourceName != null" >
+        #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="picturePath != null" >
+        #{picturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.trust.privilege.model.SystemConfigExample" resultType="java.lang.Integer" >
+    select count(*) from t_system_config
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_system_config
+    <set >
+      <if test="record.systemConfigId != null" >
+        System_Config_Id = #{record.systemConfigId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.privilegeResId != null" >
+        Privilege_Res_Id = #{record.privilegeResId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userName != null" >
+        User_Name = #{record.userName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resourceType != null" >
+        Resource_Type = #{record.resourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.showOrder != null" >
+        Show_Order = #{record.showOrder,jdbcType=INTEGER},
+      </if>
+      <if test="record.resourceName != null" >
+        Resource_Name = #{record.resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.picturePath != null" >
+        Picture_Path = #{record.picturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.url != null" >
+        URL = #{record.url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_system_config
+    set System_Config_Id = #{record.systemConfigId,jdbcType=VARCHAR},
+      Privilege_Res_Id = #{record.privilegeResId,jdbcType=VARCHAR},
+      User_Name = #{record.userName,jdbcType=VARCHAR},
+      Resource_Type = #{record.resourceType,jdbcType=VARCHAR},
+      Show_Order = #{record.showOrder,jdbcType=INTEGER},
+      Resource_Name = #{record.resourceName,jdbcType=VARCHAR},
+      Picture_Path = #{record.picturePath,jdbcType=VARCHAR},
+      URL = #{record.url,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trust.privilege.model.SystemConfig" >
+    update t_system_config
+    <set >
+      <if test="privilegeResId != null" >
+        Privilege_Res_Id = #{privilegeResId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        User_Name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="resourceType != null" >
+        Resource_Type = #{resourceType,jdbcType=VARCHAR},
+      </if>
+      <if test="showOrder != null" >
+        Show_Order = #{showOrder,jdbcType=INTEGER},
+      </if>
+      <if test="resourceName != null" >
+        Resource_Name = #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="picturePath != null" >
+        Picture_Path = #{picturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where System_Config_Id = #{systemConfigId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trust.privilege.model.SystemConfig" >
+    update t_system_config
+    set Privilege_Res_Id = #{privilegeResId,jdbcType=VARCHAR},
+      User_Name = #{userName,jdbcType=VARCHAR},
+      Resource_Type = #{resourceType,jdbcType=VARCHAR},
+      Show_Order = #{showOrder,jdbcType=INTEGER},
+      Resource_Name = #{resourceName,jdbcType=VARCHAR},
+      Picture_Path = #{picturePath,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR}
+    where System_Config_Id = #{systemConfigId,jdbcType=VARCHAR}
+  </update>
+</mapper>

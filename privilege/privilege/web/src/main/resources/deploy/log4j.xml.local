@@ -1,0 +1,66 @@
+<!DOCTYPE log4j:configuration SYSTEM "http://toolkit.alibaba-inc.com/dtd/log4j/log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="DEFAULT-APPENDER" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="/home/admin/logs/privilege/default.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <param name="threshold" value="info"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %-32t - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="ERROR-APPENDER" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="/home/admin/logs/privilege/error.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <param name="threshold" value="error"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %-32t - %m%n"/>
+        </layout>
+    </appender>
+
+    <logger name="com.trust.privilege" additivity="false">
+        <level value="info" />
+        <appender-ref ref="ERROR-APPENDER" />
+        <appender-ref ref="DEFAULT-APPENDER" />
+    </logger>
+
+
+    <!-- sofa rest 日志 -->
+    <appender name="REST-APPENDER" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="/home/admin/logs/rest/sofa-rest.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <param name="threshold" value="info"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %-32t - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="REST-ERROR-APPENDER" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="/home/admin/logs/rest/common-error.log"/>
+        <param name="append" value="true"/>
+        <param name="encoding" value="UTF-8"/>
+        <param name="threshold" value="error"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p %-32t - %m%n"/>
+        </layout>
+    </appender>
+    
+
+    <!-- sofa rest 日志 -->
+    <logger name="com.alipay.sofa.rest" additivity="false">
+        <level value="info" />
+        <appender-ref ref="REST-ERROR-APPENDER" />
+        <appender-ref ref="REST-APPENDER" />
+    </logger>
+
+    <root>
+        <level value="info" />
+        <appender-ref ref="ERROR-APPENDER" />
+        <appender-ref ref="DEFAULT-APPENDER" />
+    </root>
+</log4j:configuration>

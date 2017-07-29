@@ -1,0 +1,82 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sofa="http://schema.alipay.com/sofa/schema/slite"
+	xsi:schemaLocation="
+        http://schema.alipay.com/sofa/schema/slite 
+        http://schema.alipay.com/sofa/slite.xsd
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+	default-autowire="byName">
+
+<!-- 此文件用于配置ServerFacade实现类的Bean，并配置RPC发布服务，扫描biz层ServiceImpl的注解 -->
+
+<!-- 系统facade -->  	
+  	<bean id="systemPlatformServerFacade" 
+  			class="com.trust.privilege.biz.SystemPlatformServerFacadeImpl" />
+  	
+<!-- 菜单facade -->	
+	<bean id="menuServerFacade" 
+			class="com.trust.privilege.biz.MenuServerFacadeImpl" />
+			
+<!-- 资源facade -->
+	<bean id="privilegeServerFacade" 
+			class="com.trust.privilege.biz.PrivilegeServerFacadeImpl" />			
+			  			
+<!-- 角色facade -->	
+	<bean id="roleServerFacade" 
+			class="com.trust.privilege.biz.RoleServerFacadeImpl" />
+
+<!-- 用户组facade -->  	
+  	<bean id="groupFacade" 
+  			class="com.trust.privilege.biz.GroupFacadeImpl" />
+
+<!-- 用户facade -->	
+	<bean id="sysUserFacade" 
+			class="com.trust.privilege.biz.SystemUserServerFacadeImpl" />
+
+<!-- 日志facade -->
+	<bean id="logServerFacade" 
+			class="com.trust.privilege.biz.LogServerFacadeImpl" />
+			       
+<!-- 文件facade -->  	
+  	<bean id="importFile4OSSFacade" 
+  			class="com.trust.privilege.biz.ImportFile4OSSFacadeImpl" />
+  			
+<!-- portal facade -->
+  	<bean id="initPortalMenuFacade" 
+  			class="com.trust.privilege.biz.InitPortalMenuFacadeImpl" />
+
+
+
+<!-- 获取该用户基本信息   (权限系统对外RPC接口) -->
+	<sofa:service interface="com.trust.privilege.facade.SystemUserServerFacade" ref="sysUserFacade">
+		<sofa:binding.tr />
+	</sofa:service>
+<!-- 获取该用户所拥有角色(权限系统对外RPC接口) -->
+	<sofa:service interface="com.trust.privilege.facade.RoleServerFacade" ref="roleServerFacade">
+		<sofa:binding.tr />
+	</sofa:service>
+<!-- 获取该用户所拥有菜单(权限系统对外RPC接口) -->
+	<sofa:service interface="com.trust.privilege.facade.MenuServerFacade" ref="menuServerFacade">
+		<sofa:binding.tr />
+	</sofa:service>
+<!-- 获取该用户所拥有资源(权限系统对外RPC接口) -->
+	<sofa:service interface="com.trust.privilege.facade.PrivilegeServerFacade" ref="privilegeServerFacade">
+		<sofa:binding.tr />
+	</sofa:service>
+
+	
+<!-- OssRPC -->
+  <sofa:reference id="oSSFacade" interface="com.xinmei.cms.oss.facade.OSSFacade" unique-id="cmsOSSFacade">
+    	 <sofa:binding.tr />
+				<!-- <sofa:route target-url="10.253.106.157:12200"/> -->
+  </sofa:reference>
+	
+	
+<!-- 注解驱动 -->	
+	<!-- <context:annotation-config />
+	
+	<sofa:mobileservice scan-package="com.trust.privilege.biz" /> -->
+</beans>

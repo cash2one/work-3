@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.complexMapper.GroupDao">
+
+<!-- 默认resultMap -->
+	<resultMap id="BaseResultMap" type="com.trust.privilege.model.complex.GroupDo" >
+	    <id column="Group_Id" property="groupId" jdbcType="VARCHAR" />
+	    <result column="Group_Name" property="groupName" jdbcType="VARCHAR" />
+	    <result column="Parent_Group_Id" property="parentGroupId" jdbcType="VARCHAR" />
+	    <result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+	    <result column="Update_Dt" property="updateDt" jdbcType="TIMESTAMP" />
+	    <result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+	    <result column="Group_Desc" property="groupDesc" jdbcType="VARCHAR" />
+	    <result column="Create_UserId" property="createUserid" jdbcType="VARCHAR" />
+	</resultMap>
+
+<!-- Sql  cloumn -->  
+  <sql id="baseColumn">
+     Group_Id, Group_Name, Parent_Group_Id, State_CD, Update_Dt, Create_Dt, 
+    Group_Desc, Create_UserId
+  </sql>
+	
+<!-- 查找用户组所拥有的角色 -->
+	<select id="selectRoleFromGroup" parameterType="string" resultType="map">
+		SELECT 
+			r.`Role_Id` AS roleId,
+	 		r.`Role_Name` AS roleName 
+		FROM
+	 		t_role r 
+	  	INNER JOIN t_group_role gr 
+	   		ON r.`Role_Id` = gr.`Role_Id` 
+	  	INNER JOIN t_user_group ug 
+	    	ON ug.`Group_Id` = gr.`Group_Id`
+	  	INNER JOIN t_system_platform_code sys 
+    		ON sys.`System_Platform_CD` = r.`System_Platform_CD`   
+		WHERE 
+			ug.`Group_Id` = #{groupId}
+		AND 
+			sys.`State_CD` = '1'  
+	</select>
+  
+<!-- 超级管理员查询用户组列表 -->  
+	<select id="selectUserGroupBySuperAdmin" resultType="map">														
+		SELECT 
+			g.`Group_Name` AS groupName,
+		  	g.`Group_Id` AS groupId,
+		  	DATE_FORMAT(  g.Create_Dt,'%Y-%m-%d') Create_Dt,
+		  	g.`State_CD`,
+		  	g.`Parent_Group_Id` pId ,
+		  	U.`User_Name`,
+		  	g1.`Group_Name` AS pname 
+		FROM
+	  		t_user_group g 
+	  	LEFT JOIN t_user_group g1 
+	    	ON g.`Parent_Group_Id` = g1.`Group_Id` 
+	  	LEFT JOIN t_system_user u 
+	    	ON g.`Create_UserId` = U.User_Name 
+	    <where>
+		   <if test="state !=null and state !=''">
+				g. State_CD=#{state}
+		   </if>
+		   <if test="groupName !=null and groupName !=''">
+		       AND g. Group_Name like CONCAT('%',#{groupName},'%')
+		   </if>
+	    </where>
+	</select>
+	  		
+<!-- 通过用户名得到该用户所属用户组 -->  																				
+	<select id="selectGroupByUserName" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT 
+			g.`Group_Name` AS groupName,
+	  		g.`Group_Id` AS groupId,
+			DATE_FORMAT(  g.Create_Dt,'%Y-%m-%d') Create_Dt,
+			g.`State_CD` AS stateCd,
+			g.`Parent_Group_Id` pId ,
+			U.`User_Name` AS createUserName,
+			g1.`Group_Name` AS pname 
+		FROM
+			t_user_group g 
+	  	LEFT JOIN t_user_group g1 
+	    	ON g.`Parent_Group_Id` = g1.`Group_Id` 
+	 	LEFT JOIN t_system_user u 
+	    	ON g.`Create_UserId` = U.User_Name 
+		LEFT JOIN t_user_role_instance tui
+			ON g.Group_Id = tui.Group_Id
+			AND tui.SYSTEM_USER_ID = u.SYSTEM_USER_ID
+		WHERE u.User_Name = #{userName}
+		<if test="state !=null and state !=''">
+		     AND g.`State_CD`=#{state}
+		</if>
+		<if test="groupName !=null and groupName !=''">
+		      AND g.`Group_Name` like CONCAT('%',#{groupName},'%')
+		</if>
+	</select>
+	
+<!-- 通过id获取用户组详情 -->  
+	<select id="selectGroupDetail" parameterType="string" resultType="map">
+		SELECT 
+	  		g.`Group_Name` AS groupName,
+			g.`Group_Id` AS groupId,
+			g.`Create_Dt`,
+			g.`State_CD` AS state,
+			g.`Group_Desc` AS des,
+			U.`User_Name`,
+			g1.`Group_Name` AS pname,
+			g1.`Group_Id` AS pid,
+			r.`Role_Name`,
+			r.`Role_Id`,
+			sys.`System_Platform_Name` AS system 
+		FROM
+	 		 t_user_group g 
+			  LEFT JOIN t_user_group g1 
+			    ON g.`Parent_Group_Id` = g1.`Group_Id` 
+			  LEFT JOIN t_system_user u 
+			    ON g.`Create_UserId` = U.User_Name 
+			  LEFT JOIN t_group_role gr 
+			    ON g.`Group_Id` = gr.`Group_Id` 
+			  LEFT JOIN t_role r 
+			    ON gr.`Role_Id` = r.`Role_Id` 
+			  LEFT JOIN t_system_platform_code sys 
+			    ON sys.`System_Platform_CD` = r.`System_Platform_CD` 
+		WHERE 
+			g.`Group_Id` = #{groupId}
+		AND 
+			sys.`State_CD`='1'
+  </select>
+  
+<!-- 获取所有用户组-->  
+	<select id="selectOptGroupBySuperAdmin" resultType="map">
+		SELECT 
+			g.`Group_Id` AS groupId,
+	  		g.`Group_Name` AS groupName,
+	  		g.`Parent_Group_Id` pId 
+		FROM
+	  		t_user_group g 
+	  	WHERE 
+	  		g.`State_CD` = '1'
+	</select>
+  
+<!-- 通过用户名和系统CD得到该用户所拥有的角色 -->  
+	<select id="selectRoleBySys"  resultType="map">
+		SELECT 
+			DISTINCT
+			r.Role_Name as roleName,
+			r.Role_Id as roleId
+		FROM
+			t_role r
+		LEFT JOIN t_system_platform_code tspc 
+			ON tspc.System_Platform_CD = r.System_Platform_CD
+		LEFT JOIN t_group_role tgr 
+			ON tgr.Role_Id = r.Role_Id
+		LEFT JOIN t_user_role_instance uri 
+			ON uri.Group_Id = tgr.Group_Id
+		LEFT JOIN t_system_user u 
+			ON uri.SYSTEM_USER_ID = u.SYSTEM_USER_ID
+		WHERE
+			u.User_Name = #{userName}
+		AND
+			r.System_Platform_CD =#{systemId} 
+		AND
+			r.State_CD = '1'
+	</select>
+  
+<!-- 获取拥有该用户组的用户 -->  
+	<select id="selectUserInGroup" parameterType="string" resultType="string">
+		SELECT DISTINCT 
+			u.`User_Name` 
+		FROM
+	  		t_system_user u 
+	  	INNER JOIN t_user_role_instance uri 
+	    	ON u.`SYSTEM_USER_ID` = uri.`SYSTEM_USER_ID` 
+		WHERE 
+			uri.`Group_Id` = #{groupId} 
+	</select>
+  
+  <!-- 根据用户组名称找到这个用户组的数据 -->
+  	<select id="selectGroupByGroupName"  resultMap="BaseResultMap">
+  		SELECT
+  			<include refid="baseColumn" />
+  		FROM 
+  			T_USER_GROUP
+  		WHERE
+  			GROUP_NAME=#{value}
+  	</select>	
+
+</mapper>

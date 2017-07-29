@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!-- Maven父项目信息 -->	
+	<parent>
+		<artifactId>privilege</artifactId>
+		<groupId>com.trust.privilege</groupId>
+		<version>1.0.0</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+<!-- 版本号 -->	
+	<modelVersion>4.0.0</modelVersion>
+<!-- 当前模块信息 -->
+	<artifactId>privilege-facade</artifactId>
+	<!-- <version>1.0.0-SNAPSHOT</version>  -->  	
+	<dependencies>
+		<dependency>
+			<groupId>com.alibaba.mpaasgw</groupId>
+			<artifactId>mpaasgw-spi-adapter</artifactId>
+			<version>1.0.0.20150723</version><!--$NO-MVN-MAN-VER$-->
+		</dependency>
+	</dependencies>
+
+<!-- 上传到本地私服,用于Sofa-Rpc服务调用 -->
+ <distributionManagement>   
+        <repository>   
+            <id>nexus-server@public</id>   
+            <url> http://10.253.103.73:8081/nexus/content/repositories/releases/ </url>   
+        </repository>   
+        <snapshotRepository>   
+            <id>nexus-server@public-snapshots</id>   
+            <url> http://10.253.103.73:8081/nexus/content/repositories/snapshots/ </url>   
+        </snapshotRepository >   
+  </distributionManagement >
+
+</project>

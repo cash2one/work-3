@@ -1,0 +1,190 @@
+<!DOCTYPE mapper		
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">		
+ <mapper namespace="com.trust.privilege.dao.complexMapper.SysUserDao">
+
+<!-- 默认resultMap -->
+	<resultMap id="BaseResultMap" type="com.trust.privilege.model.complex.UserDo" >
+		<id column="SYSTEM_USER_ID" property="systemUserId" jdbcType="VARCHAR" />
+		<result column="User_Name" property="userName" jdbcType="VARCHAR" />
+		<result column="Password" property="password" jdbcType="VARCHAR" />
+		<result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+		<result column="Update_Dt" property="updateDt" jdbcType="TIMESTAMP" />
+		<result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+		<result column="User_Desc" property="userDesc" jdbcType="VARCHAR" />
+		<result column="Create_User_Id" property="createUserId" jdbcType="VARCHAR" />
+	    <result column="ID_Card" property="idCard" jdbcType="VARCHAR" />
+	    <result column="Tel_Number" property="telNumber" jdbcType="VARCHAR" />
+	    <result column="realname" property="realName" jdbcType="VARCHAR" />
+	    <result column="Member_Type" property="memberType" jdbcType="VARCHAR" />
+    	<result column="createUserName" property="createUserName" jdbcType="VARCHAR" />
+    </resultMap>	    
+    
+<!-- 自定义resultMap -->        
+    <resultMap id="BaseResultMapRelation" type="com.trust.privilege.model.complex.UserDo" extends="BaseResultMap">
+        <collection property="roleNames" ofType="string">
+        <result column="Role_Name" property="roleNames" jdbcType="VARCHAR" />
+        </collection>
+    </resultMap>
+  
+<!-- 非管理员查询用户信息 -->  
+	<select id="selectUser" parameterType="map" resultMap="BaseResultMapRelation">
+		SELECT 
+			DISTINCT
+			u.SYSTEM_USER_ID,
+			u.ID_Card,
+			u.State_CD,
+			u.User_Name,
+			DATE_FORMAT(u.Create_Dt, '%Y-%m-%d') Create_Dt,
+			u1.User_Name AS createUserName,
+			r.Role_Name
+		FROM
+			t_system_user u
+		INNER JOIN t_user_role_instance uri 
+			ON uri.SYSTEM_USER_ID = u.SYSTEM_USER_ID 
+			AND uri.State_CD = '1'
+		LEFT JOIN t_group_role tgr 
+			ON tgr.Group_Id = uri.Group_Id
+			AND tgr.State_CD = '1'
+		INNER JOIN t_role r 
+			ON tgr.Role_Id = r.Role_Id 
+			AND r.State_CD = '1'
+		INNER JOIN t_system_user u1 
+		WHERE
+			u.User_Name in 
+		 	<foreach collection="list" item="userIdList"  open="(" separator="," close=")">  
+       		 	#{userIdList}  
+    	 	</foreach>
+		    <if test="state !=null and state !=''">
+		    	AND u. State_CD=#{state}
+		    </if>
+		    <if test="queryUserName !=null and queryUserName !=''">
+		       AND u. User_Name like CONCAT('%',#{queryUserName},'%')
+		    </if>
+	</select>
+
+<!-- 管理员身份查询用户信息 -->  
+	<select id="selectUserBySuperAdmin" parameterType="map" resultMap="BaseResultMapRelation">
+		SELECT
+		DISTINCT
+			u.SYSTEM_USER_ID,
+			u.ID_Card,
+			u.State_CD,
+			u.User_Name,
+			DATE_FORMAT(  u.Create_Dt,'%Y-%m-%d') Create_Dt,
+	 		u1.User_Name AS createUserName,
+  			r.Role_Name
+		FROM 
+			t_system_user	u
+		INNER JOIN t_system_user u1 
+		    ON u.Create_User_Id = u1.User_Name
+		INNER JOIN t_user_role_instance uri 
+		    ON uri.SYSTEM_USER_ID=u.SYSTEM_USER_ID
+		LEFT JOIN  t_user_group tug
+			ON uri.Group_Id = tug.Group_Id
+ 		INNER JOIN t_group_role tgr	
+			ON tug.group_id = tgr.Group_Id
+ 		INNER JOIN t_role r 
+		    	ON tgr.Role_Id = r.Role_Id
+		<if test="state !=null and state !=''">
+		   	AND u. State_CD=#{state}
+		</if>
+		<if test="queryUserName !=null and queryUserName !=''">
+		      AND u. User_Name like CONCAT('%',#{queryUserName},'%')
+		</if>
+	</select>
+   
+<!-- 通过用户Id,得到该用户详情 -->   
+	<select id="selectUserDetail" parameterType="String" resultType="map">
+		SELECT	
+		DISTINCT
+			g.`Group_Name` AS groupName,
+			g.`Group_Id` AS groupId,
+			r.`Role_Name`,
+			r.`Role_Id`,
+			u.`User_Name` AS userName,
+			u.`User_Desc` AS userDesc,
+			u.`State_CD` AS state,
+			u.`ID_Card` AS idCard,
+			u.`Member_Type` AS memberType
+		FROM
+			t_role r
+		LEFT JOIN t_group_role tgr
+			ON tgr.Role_Id = r.Role_Id
+		LEFT JOIN t_user_group g
+			ON g.Group_Id = tgr.Group_Id
+		LEFT JOIN t_user_role_instance uri
+			ON uri.Group_Id = g.Group_Id
+		LEFT JOIN t_system_user u 
+			ON uri.SYSTEM_USER_ID = u.SYSTEM_USER_ID
+		WHERE
+			u.SYSTEM_USER_ID = #{userId} 
+	</select>
+   
+<!-- 根据身份证号查询用户信息 -->
+	<select id="selectUserByIdCard" parameterType="java.lang.String" resultMap="BaseResultMap">
+   		SELECT 
+	   		SYSTEM_USER_ID,
+	   		USER_NAME,
+	   		PASSWORD,
+	   		STATE_CD,
+	   		USER_DESC,
+	   		CREATE_USER_ID,
+	   		ID_CARD
+   		FROM 
+   			T_SYSTEM_USER
+   		WHERE 
+   			USER_NAME=#{value}
+	</select>
+   
+<!-- 通过用户名查询该用户信息 -->   
+   <select id="selectUserInfo" parameterType="string" resultMap="BaseResultMap">
+    SELECT 
+	  u.`User_Name`,
+	  u.`Tel_Number`,
+	  u.`SYSTEM_USER_ID`,
+	  u.`User_Desc`,
+	  me.`Member_Name` AS realname 
+	FROM
+	  t_system_user u 
+	  INNER JOIN t_member me 
+	    ON u.`ID_Card` = me.`Member_Id` 
+	WHERE u.`User_Name` =#{userName}    
+   </select>
+   
+<!-- 根据用户名，修改密码 -->   
+	<update id="modifyPassWord" parameterType="string" >
+		UPDATE 
+			t_system_user 
+		SET
+	 	Password =#{password} 
+		WHERE User_Name =#{userName} 
+	</update>
+   
+<!-- 通过用户名查找该用户拥有的角色 -->
+   <select id="selectRoleByUserName" parameterType="string" resultType="map">
+	   SELECT  
+		  r.Role_Id AS roleId,
+		  r.Role_Name AS roleName 
+		FROM
+			t_role r
+			LEFT JOIN t_group_role tgr ON tgr.Role_Id = r.Role_Id 
+			LEFT JOIN t_user_role_instance uri ON uri.Group_Id = tgr.Group_Id 
+			LEFT JOIN t_system_user u ON u.SYSTEM_USER_ID = uri.SYSTEM_USER_ID
+		WHERE
+			u.User_Name = #{userName}
+		AND 
+			r.System_Platform_CD = #{systemId} 
+   </select>
+   
+<!-- 通过用户名得到该用户Id -->  
+	<select id="selectUserIdByUserName" parameterType="string" resultType="string">
+   		SELECT 
+   			SYSTEM_USER_ID	
+   		FROM 
+   			t_system_user 
+   		WHERE 
+   			User_Name = #{userName}
+    </select>
+    
+</mapper>

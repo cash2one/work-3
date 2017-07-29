@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.SystemPlatformMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.SystemPlatform" >
+    <id column="System_Platform_CD" property="systemPlatformCd" jdbcType="VARCHAR" />
+    <result column="System_Platform_Name" property="systemPlatformName" jdbcType="VARCHAR" />
+    <result column="System_Platform_Desc" property="systemPlatformDesc" jdbcType="VARCHAR" />
+    <result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+    <result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+    <result column="Create_User_Id" property="createUserId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    System_Platform_CD, System_Platform_Name, System_Platform_Desc, State_CD, Create_Dt, 
+    Create_User_Id
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.trust.privilege.model.SystemPlatformExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_system_platform_code
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_system_platform_code
+    where System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_system_platform_code
+    where System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.trust.privilege.model.SystemPlatformExample" >
+    delete from t_system_platform_code
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.trust.privilege.model.SystemPlatform" >
+    insert into t_system_platform_code (System_Platform_CD, System_Platform_Name, 
+      System_Platform_Desc, State_CD, Create_Dt, 
+      Create_User_Id)
+    values (#{systemPlatformCd,jdbcType=VARCHAR}, #{systemPlatformName,jdbcType=VARCHAR}, 
+      #{systemPlatformDesc,jdbcType=VARCHAR}, #{stateCd,jdbcType=VARCHAR}, #{createDt,jdbcType=TIMESTAMP}, 
+      #{createUserId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.trust.privilege.model.SystemPlatform" >
+    insert into t_system_platform_code
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="systemPlatformCd != null" >
+        System_Platform_CD,
+      </if>
+      <if test="systemPlatformName != null" >
+        System_Platform_Name,
+      </if>
+      <if test="systemPlatformDesc != null" >
+        System_Platform_Desc,
+      </if>
+      <if test="stateCd != null" >
+        State_CD,
+      </if>
+      <if test="createDt != null" >
+        Create_Dt,
+      </if>
+      <if test="createUserId != null" >
+        Create_User_Id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="systemPlatformCd != null" >
+        #{systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="systemPlatformName != null" >
+        #{systemPlatformName,jdbcType=VARCHAR},
+      </if>
+      <if test="systemPlatformDesc != null" >
+        #{systemPlatformDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="stateCd != null" >
+        #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createDt != null" >
+        #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.trust.privilege.model.SystemPlatformExample" resultType="java.lang.Integer" >
+    select count(*) from t_system_platform_code
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_system_platform_code
+    <set >
+      <if test="record.systemPlatformCd != null" >
+        System_Platform_CD = #{record.systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.systemPlatformName != null" >
+        System_Platform_Name = #{record.systemPlatformName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.systemPlatformDesc != null" >
+        System_Platform_Desc = #{record.systemPlatformDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stateCd != null" >
+        State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDt != null" >
+        Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUserId != null" >
+        Create_User_Id = #{record.createUserId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_system_platform_code
+    set System_Platform_CD = #{record.systemPlatformCd,jdbcType=VARCHAR},
+      System_Platform_Name = #{record.systemPlatformName,jdbcType=VARCHAR},
+      System_Platform_Desc = #{record.systemPlatformDesc,jdbcType=VARCHAR},
+      State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      Create_User_Id = #{record.createUserId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trust.privilege.model.SystemPlatform" >
+    update t_system_platform_code
+    <set >
+      <if test="systemPlatformName != null" >
+        System_Platform_Name = #{systemPlatformName,jdbcType=VARCHAR},
+      </if>
+      <if test="systemPlatformDesc != null" >
+        System_Platform_Desc = #{systemPlatformDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="stateCd != null" >
+        State_CD = #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="createDt != null" >
+        Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUserId != null" >
+        Create_User_Id = #{createUserId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trust.privilege.model.SystemPlatform" >
+    update t_system_platform_code
+    set System_Platform_Name = #{systemPlatformName,jdbcType=VARCHAR},
+      System_Platform_Desc = #{systemPlatformDesc,jdbcType=VARCHAR},
+      State_CD = #{stateCd,jdbcType=VARCHAR},
+      Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      Create_User_Id = #{createUserId,jdbcType=VARCHAR}
+    where System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR}
+  </update>
+</mapper>

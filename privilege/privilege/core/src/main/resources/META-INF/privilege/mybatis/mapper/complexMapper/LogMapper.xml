@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.complexMapper.LogMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.complex.LogDetail" >
+    <result column="Log_Id" property="logId" jdbcType="VARCHAR" />
+    <result column="Type_Id" property="typeId" jdbcType="VARCHAR" />
+    <result column="User_Name" property="userName" jdbcType="VARCHAR" />
+    <result column="System_Platform_Name" property="systemPlatformName" jdbcType="VARCHAR" />
+    <result column="Resource_Name" property="resourceName" jdbcType="VARCHAR" />
+    <result column="Method" property="method" jdbcType="VARCHAR" />
+    <result column="Create_Time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="Message" property="message" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    Log_Id logId,Type_Id typeId, User_Name userName, System_Platform_Name systemPlatformName, Resource_Name resourceName, Method method, DATE_FORMAT(Create_Time,'%Y-%m-%d %H:%i:%s') createTime<!-- Create_Time createTime -->, Message message
+  </sql>
+  
+  <insert id="insertLog" parameterType="com.trust.privilege.model.complex.LogDetail" >
+    insert into t_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        Log_Id,
+      </if>
+      <if test="typeId != null" >
+        Type_Id,
+      </if>
+      <if test="userName != null" >
+        User_Name,
+      </if>
+      <if test="systemPlatformName != null" >
+        System_Platform_Name,
+      </if>
+      <if test="resourceName != null" >
+        Resource_Name,
+      </if>
+      <if test="method != null" >
+        Method,
+      </if>
+      <if test="createTime != null" >
+        Create_Time,
+      </if>
+      <if test="message != null" >
+        Message,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        #{logId,jdbcType=VARCHAR},
+      </if>
+      <if test="typeId != null" >
+        #{typeId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="systemPlatformName != null" >
+       #{systemPlatformName,jdbcType=VARCHAR}, 
+      </if>
+      <if test="resourceName != null" >
+        #{resourceName,jdbcType=VARCHAR},
+      </if>
+      <if test="method != null" >
+        #{method,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="message != null" >
+        #{message,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="getLogMsg" parameterType="logDetail" resultType="java.util.HashMap">
+  		SELECT 
+  			<include refid="Base_Column_List" />
+  		FROM 
+  			t_log WHERE '1'='1'
+ 		<if test="typeId!=null and typeId!=''">
+ 	   		AND Type_Id=#{typeId}
+ 		</if>
+	 	<if test="method!=null and method!=''" >
+	       AND Method =#{method}
+	    </if>
+	 	<if test="systemPlatformName != null and systemPlatformName!=''" >
+	       AND System_Platform_Name LIKE
+	       CONCAT('%',#{systemPlatformName},'%')
+	    </if>
+	    <if test="resourceName != null" >
+	       AND Resource_Name LIKE
+	       CONCAT('%',#{resourceName},'%')
+	    </if>
+	 	<if test="message!=null and message!=''">
+	 	   AND Message LIKE
+		   CONCAT('%',#{message},'%')
+		</if>
+		<if test="startDate != null and startDate!='' and endDate!=null and endDate!=''">
+			AND Create_Time BETWEEN #{startDate} AND #{endDate}
+		</if>
+		<if test="userName!=null and userName!=''">
+			AND User_Name LIKE
+			CONCAT('%',#{userName},'%')
+		</if>
+  		   ORDER BY Create_Time DESC
+	</select>
+  
+  
+</mapper>

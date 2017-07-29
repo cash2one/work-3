@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.PrivilegeResTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.PrivilegeResType" >
+    <id column="Res_Type_CD" property="resTypeCd" jdbcType="VARCHAR" />
+    <result column="Res_Type_Mark" property="resTypeMark" jdbcType="VARCHAR" />
+    <result column="Res_Type_Name" property="resTypeName" jdbcType="VARCHAR" />
+    <result column="Res_Type_Desc" property="resTypeDesc" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    Res_Type_CD, Res_Type_Mark, Res_Type_Name, Res_Type_Desc
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.trust.privilege.model.PrivilegeResTypeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_privilege_res_type_code
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_privilege_res_type_code
+    where Res_Type_CD = #{resTypeCd,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_privilege_res_type_code
+    where Res_Type_CD = #{resTypeCd,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.trust.privilege.model.PrivilegeResTypeExample" >
+    delete from t_privilege_res_type_code
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.trust.privilege.model.PrivilegeResType" >
+    insert into t_privilege_res_type_code (Res_Type_CD, Res_Type_Mark, Res_Type_Name, 
+      Res_Type_Desc)
+    values (#{resTypeCd,jdbcType=VARCHAR}, #{resTypeMark,jdbcType=VARCHAR}, #{resTypeName,jdbcType=VARCHAR}, 
+      #{resTypeDesc,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.trust.privilege.model.PrivilegeResType" >
+    insert into t_privilege_res_type_code
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="resTypeCd != null" >
+        Res_Type_CD,
+      </if>
+      <if test="resTypeMark != null" >
+        Res_Type_Mark,
+      </if>
+      <if test="resTypeName != null" >
+        Res_Type_Name,
+      </if>
+      <if test="resTypeDesc != null" >
+        Res_Type_Desc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="resTypeCd != null" >
+        #{resTypeCd,jdbcType=VARCHAR},
+      </if>
+      <if test="resTypeMark != null" >
+        #{resTypeMark,jdbcType=VARCHAR},
+      </if>
+      <if test="resTypeName != null" >
+        #{resTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="resTypeDesc != null" >
+        #{resTypeDesc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.trust.privilege.model.PrivilegeResTypeExample" resultType="java.lang.Integer" >
+    select count(*) from t_privilege_res_type_code
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_privilege_res_type_code
+    <set >
+      <if test="record.resTypeCd != null" >
+        Res_Type_CD = #{record.resTypeCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resTypeMark != null" >
+        Res_Type_Mark = #{record.resTypeMark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resTypeName != null" >
+        Res_Type_Name = #{record.resTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resTypeDesc != null" >
+        Res_Type_Desc = #{record.resTypeDesc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_privilege_res_type_code
+    set Res_Type_CD = #{record.resTypeCd,jdbcType=VARCHAR},
+      Res_Type_Mark = #{record.resTypeMark,jdbcType=VARCHAR},
+      Res_Type_Name = #{record.resTypeName,jdbcType=VARCHAR},
+      Res_Type_Desc = #{record.resTypeDesc,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trust.privilege.model.PrivilegeResType" >
+    update t_privilege_res_type_code
+    <set >
+      <if test="resTypeMark != null" >
+        Res_Type_Mark = #{resTypeMark,jdbcType=VARCHAR},
+      </if>
+      <if test="resTypeName != null" >
+        Res_Type_Name = #{resTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="resTypeDesc != null" >
+        Res_Type_Desc = #{resTypeDesc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Res_Type_CD = #{resTypeCd,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trust.privilege.model.PrivilegeResType" >
+    update t_privilege_res_type_code
+    set Res_Type_Mark = #{resTypeMark,jdbcType=VARCHAR},
+      Res_Type_Name = #{resTypeName,jdbcType=VARCHAR},
+      Res_Type_Desc = #{resTypeDesc,jdbcType=VARCHAR}
+    where Res_Type_CD = #{resTypeCd,jdbcType=VARCHAR}
+  </update>
+</mapper>

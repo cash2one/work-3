@@ -1,0 +1,21 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sofa="http://schema.alipay.com/sofa/schema/slite"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://schema.alipay.com/sofa/schema/slite http://schema.alipay.com/sofa/slite.xsd" default-autowire="byName">
+
+	<context:property-placeholder
+		 location="classpath:test/privilege/config-local.properties" ignore-unresolvable="true"/>
+
+
+    <!-- 注意:这个地方是初始化 SOFALite,一定要将这个引入放到最上层,也就是 web 层,如果是 core 类型工程请放到最上层依赖中-->
+    <import resource="classpath*:META-INF/sofa-beans-api.xml"/>
+    <!--紧接着引入 当前工程中所有的配置文件(下面的etrust指明了只是当前应用),注意是所有你配置的指定目录下的 etrust 配置文件-->
+    <import resource="classpath*:META-INF/privilege/*.xml"/>
+
+</beans>

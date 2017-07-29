@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.MenuMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.Menu" >
+    <id column="Menu_Id" property="menuId" jdbcType="VARCHAR" />
+    <result column="System_Platform_CD" property="systemPlatformCd" jdbcType="VARCHAR" />
+    <result column="Menu_Name" property="menuName" jdbcType="VARCHAR" />
+    <result column="Menu_Desc" property="menuDesc" jdbcType="VARCHAR" />
+    <result column="Reqeust_Methed" property="reqeustMethed" jdbcType="VARCHAR" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+    <result column="Parent_Id" property="parentId" jdbcType="VARCHAR" />
+    <result column="Menu_Level" property="menuLevel" jdbcType="VARCHAR" />
+    <result column="Update_Dt" property="updateDt" jdbcType="TIMESTAMP" />
+    <result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+    <result column="Show_Order" property="showOrder" jdbcType="VARCHAR" />
+    <result column="Create_User_Id" property="createUserId" jdbcType="VARCHAR" />
+    <result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    Menu_Id, System_Platform_CD, Menu_Name, Menu_Desc, Reqeust_Methed, URL, Parent_Id, 
+    Menu_Level, Update_Dt, Create_Dt, Show_Order, Create_User_Id, State_CD
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.trust.privilege.model.MenuExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_menu
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_menu
+    where Menu_Id = #{menuId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_menu
+    where Menu_Id = #{menuId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.trust.privilege.model.MenuExample" >
+    delete from t_menu
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.trust.privilege.model.Menu" >
+    insert into t_menu (Menu_Id, System_Platform_CD, Menu_Name, 
+      Menu_Desc, Reqeust_Methed, URL, 
+      Parent_Id, Menu_Level, Update_Dt, 
+      Create_Dt, Show_Order, Create_User_Id, 
+      State_CD)
+    values (#{menuId,jdbcType=VARCHAR}, #{systemPlatformCd,jdbcType=VARCHAR}, #{menuName,jdbcType=VARCHAR}, 
+      #{menuDesc,jdbcType=VARCHAR}, #{reqeustMethed,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{parentId,jdbcType=VARCHAR}, #{menuLevel,jdbcType=VARCHAR}, #{updateDt,jdbcType=TIMESTAMP}, 
+      #{createDt,jdbcType=TIMESTAMP}, #{showOrder,jdbcType=VARCHAR}, #{createUserId,jdbcType=VARCHAR}, 
+      #{stateCd,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.trust.privilege.model.Menu" >
+    insert into t_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="menuId != null" >
+        Menu_Id,
+      </if>
+      <if test="systemPlatformCd != null" >
+        System_Platform_CD,
+      </if>
+      <if test="menuName != null" >
+        Menu_Name,
+      </if>
+      <if test="menuDesc != null" >
+        Menu_Desc,
+      </if>
+      <if test="reqeustMethed != null" >
+        Reqeust_Methed,
+      </if>
+      <if test="url != null" >
+        URL,
+      </if>
+      <if test="parentId != null" >
+        Parent_Id,
+      </if>
+      <if test="menuLevel != null" >
+        Menu_Level,
+      </if>
+      <if test="updateDt != null" >
+        Update_Dt,
+      </if>
+      <if test="createDt != null" >
+        Create_Dt,
+      </if>
+      <if test="showOrder != null" >
+        Show_Order,
+      </if>
+      <if test="createUserId != null" >
+        Create_User_Id,
+      </if>
+      <if test="stateCd != null" >
+        State_CD,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="menuId != null" >
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="systemPlatformCd != null" >
+        #{systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDesc != null" >
+        #{menuDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="reqeustMethed != null" >
+        #{reqeustMethed,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuLevel != null" >
+        #{menuLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDt != null" >
+        #{updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createDt != null" >
+        #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="showOrder != null" >
+        #{showOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="stateCd != null" >
+        #{stateCd,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.trust.privilege.model.MenuExample" resultType="java.lang.Integer" >
+    select count(*) from t_menu
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_menu
+    <set >
+      <if test="record.menuId != null" >
+        Menu_Id = #{record.menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.systemPlatformCd != null" >
+        System_Platform_CD = #{record.systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.menuName != null" >
+        Menu_Name = #{record.menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.menuDesc != null" >
+        Menu_Desc = #{record.menuDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqeustMethed != null" >
+        Reqeust_Methed = #{record.reqeustMethed,jdbcType=VARCHAR},
+      </if>
+      <if test="record.url != null" >
+        URL = #{record.url,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentId != null" >
+        Parent_Id = #{record.parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.menuLevel != null" >
+        Menu_Level = #{record.menuLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateDt != null" >
+        Update_Dt = #{record.updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createDt != null" >
+        Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.showOrder != null" >
+        Show_Order = #{record.showOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserId != null" >
+        Create_User_Id = #{record.createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stateCd != null" >
+        State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_menu
+    set Menu_Id = #{record.menuId,jdbcType=VARCHAR},
+      System_Platform_CD = #{record.systemPlatformCd,jdbcType=VARCHAR},
+      Menu_Name = #{record.menuName,jdbcType=VARCHAR},
+      Menu_Desc = #{record.menuDesc,jdbcType=VARCHAR},
+      Reqeust_Methed = #{record.reqeustMethed,jdbcType=VARCHAR},
+      URL = #{record.url,jdbcType=VARCHAR},
+      Parent_Id = #{record.parentId,jdbcType=VARCHAR},
+      Menu_Level = #{record.menuLevel,jdbcType=VARCHAR},
+      Update_Dt = #{record.updateDt,jdbcType=TIMESTAMP},
+      Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      Show_Order = #{record.showOrder,jdbcType=VARCHAR},
+      Create_User_Id = #{record.createUserId,jdbcType=VARCHAR},
+      State_CD = #{record.stateCd,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trust.privilege.model.Menu" >
+    update t_menu
+    <set >
+      <if test="systemPlatformCd != null" >
+        System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        Menu_Name = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuDesc != null" >
+        Menu_Desc = #{menuDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="reqeustMethed != null" >
+        Reqeust_Methed = #{reqeustMethed,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null" >
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        Parent_Id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuLevel != null" >
+        Menu_Level = #{menuLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDt != null" >
+        Update_Dt = #{updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createDt != null" >
+        Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="showOrder != null" >
+        Show_Order = #{showOrder,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        Create_User_Id = #{createUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="stateCd != null" >
+        State_CD = #{stateCd,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where Menu_Id = #{menuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trust.privilege.model.Menu" >
+    update t_menu
+    set System_Platform_CD = #{systemPlatformCd,jdbcType=VARCHAR},
+      Menu_Name = #{menuName,jdbcType=VARCHAR},
+      Menu_Desc = #{menuDesc,jdbcType=VARCHAR},
+      Reqeust_Methed = #{reqeustMethed,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR},
+      Parent_Id = #{parentId,jdbcType=VARCHAR},
+      Menu_Level = #{menuLevel,jdbcType=VARCHAR},
+      Update_Dt = #{updateDt,jdbcType=TIMESTAMP},
+      Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      Show_Order = #{showOrder,jdbcType=VARCHAR},
+      Create_User_Id = #{createUserId,jdbcType=VARCHAR},
+      State_CD = #{stateCd,jdbcType=VARCHAR}
+    where Menu_Id = #{menuId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.trust.privilege.dao.UserGroupMapper" >
+  <resultMap id="BaseResultMap" type="com.trust.privilege.model.UserGroup" >
+    <id column="Group_Id" property="groupId" jdbcType="VARCHAR" />
+    <result column="Group_Name" property="groupName" jdbcType="VARCHAR" />
+    <result column="Parent_Group_Id" property="parentGroupId" jdbcType="VARCHAR" />
+    <result column="State_CD" property="stateCd" jdbcType="VARCHAR" />
+    <result column="Update_Dt" property="updateDt" jdbcType="TIMESTAMP" />
+    <result column="Create_Dt" property="createDt" jdbcType="TIMESTAMP" />
+    <result column="Group_Desc" property="groupDesc" jdbcType="VARCHAR" />
+    <result column="Create_UserId" property="createUserid" jdbcType="VARCHAR" />
+    <result column="Column_9" property="column9" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    Group_Id, Group_Name, Parent_Group_Id, State_CD, Update_Dt, Create_Dt, Group_Desc, 
+    Create_UserId, Column_9
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.trust.privilege.model.UserGroupExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_user_group
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_user_group
+    where Group_Id = #{groupId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_user_group
+    where Group_Id = #{groupId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.trust.privilege.model.UserGroupExample" >
+    delete from t_user_group
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.trust.privilege.model.UserGroup" >
+    insert into t_user_group (Group_Id, Group_Name, Parent_Group_Id, 
+      State_CD, Update_Dt, Create_Dt, 
+      Group_Desc, Create_UserId, Column_9
+      )
+    values (#{groupId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR}, #{parentGroupId,jdbcType=VARCHAR}, 
+      #{stateCd,jdbcType=VARCHAR}, #{updateDt,jdbcType=TIMESTAMP}, #{createDt,jdbcType=TIMESTAMP}, 
+      #{groupDesc,jdbcType=VARCHAR}, #{createUserid,jdbcType=VARCHAR}, #{column9,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.trust.privilege.model.UserGroup" >
+    insert into t_user_group
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        Group_Id,
+      </if>
+      <if test="groupName != null" >
+        Group_Name,
+      </if>
+      <if test="parentGroupId != null" >
+        Parent_Group_Id,
+      </if>
+      <if test="stateCd != null" >
+        State_CD,
+      </if>
+      <if test="updateDt != null" >
+        Update_Dt,
+      </if>
+      <if test="createDt != null" >
+        Create_Dt,
+      </if>
+      <if test="groupDesc != null" >
+        Group_Desc,
+      </if>
+      <if test="createUserid != null" >
+        Create_UserId,
+      </if>
+      <if test="column9 != null" >
+        Column_9,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="groupName != null" >
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentGroupId != null" >
+        #{parentGroupId,jdbcType=VARCHAR},
+      </if>
+      <if test="stateCd != null" >
+        #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDt != null" >
+        #{updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createDt != null" >
+        #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupDesc != null" >
+        #{groupDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserid != null" >
+        #{createUserid,jdbcType=VARCHAR},
+      </if>
+      <if test="column9 != null" >
+        #{column9,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.trust.privilege.model.UserGroupExample" resultType="java.lang.Integer" >
+    select count(*) from t_user_group
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_user_group
+    <set >
+      <if test="record.groupId != null" >
+        Group_Id = #{record.groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupName != null" >
+        Group_Name = #{record.groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentGroupId != null" >
+        Parent_Group_Id = #{record.parentGroupId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.stateCd != null" >
+        State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updateDt != null" >
+        Update_Dt = #{record.updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createDt != null" >
+        Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.groupDesc != null" >
+        Group_Desc = #{record.groupDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUserid != null" >
+        Create_UserId = #{record.createUserid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.column9 != null" >
+        Column_9 = #{record.column9,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_user_group
+    set Group_Id = #{record.groupId,jdbcType=VARCHAR},
+      Group_Name = #{record.groupName,jdbcType=VARCHAR},
+      Parent_Group_Id = #{record.parentGroupId,jdbcType=VARCHAR},
+      State_CD = #{record.stateCd,jdbcType=VARCHAR},
+      Update_Dt = #{record.updateDt,jdbcType=TIMESTAMP},
+      Create_Dt = #{record.createDt,jdbcType=TIMESTAMP},
+      Group_Desc = #{record.groupDesc,jdbcType=VARCHAR},
+      Create_UserId = #{record.createUserid,jdbcType=VARCHAR},
+      Column_9 = #{record.column9,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.trust.privilege.model.UserGroup" >
+    update t_user_group
+    <set >
+      <if test="groupName != null" >
+        Group_Name = #{groupName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentGroupId != null" >
+        Parent_Group_Id = #{parentGroupId,jdbcType=VARCHAR},
+      </if>
+      <if test="stateCd != null" >
+        State_CD = #{stateCd,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDt != null" >
+        Update_Dt = #{updateDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createDt != null" >
+        Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="groupDesc != null" >
+        Group_Desc = #{groupDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserid != null" >
+        Create_UserId = #{createUserid,jdbcType=VARCHAR},
+      </if>
+      <if test="column9 != null" >
+        Column_9 = #{column9,jdbcType=CHAR},
+      </if>
+    </set>
+    where Group_Id = #{groupId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.trust.privilege.model.UserGroup" >
+    update t_user_group
+    set Group_Name = #{groupName,jdbcType=VARCHAR},
+      Parent_Group_Id = #{parentGroupId,jdbcType=VARCHAR},
+      State_CD = #{stateCd,jdbcType=VARCHAR},
+      Update_Dt = #{updateDt,jdbcType=TIMESTAMP},
+      Create_Dt = #{createDt,jdbcType=TIMESTAMP},
+      Group_Desc = #{groupDesc,jdbcType=VARCHAR},
+      Create_UserId = #{createUserid,jdbcType=VARCHAR},
+      Column_9 = #{column9,jdbcType=CHAR}
+    where Group_Id = #{groupId,jdbcType=VARCHAR}
+  </update>
+</mapper>
