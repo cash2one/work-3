@@ -4,3 +4,7 @@ https://auth.cloud.alipay.com/#/cloudauth/login?goto=https:%2F%2Fgit.cloud.alipa
 
 
 http://cloud2-portal.trustlife.com:8080/privilege/static/index.html
+
+jdbc.url=jdbc:mysql://rm-1tevqu6y8ijwhwmw7.mysql.rds.aliyuncs.com:3306/eright
+jdbc.username=eright_uat
+jdbc.password=uat123
