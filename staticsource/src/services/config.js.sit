@@ -1,0 +1,5 @@
+//sit 环境
+export const API_HREF = 'https://cloud1-sso.trustlife.com/login?service=';
+
+export const API_FIX = 'cloud1-portal.trustlife.com';
+
