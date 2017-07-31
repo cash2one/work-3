@@ -1,0 +1,39 @@
+Portal页面左侧菜单数据渲染                                             GET http://local.trust.com:8341/trust/privilege/showPortalMenu
+Portal页面右侧菜单数据渲染                                             GET http://local.trust.com:8341/trust/privilege/showPortal
+修改个人信息时，为该用户新增常用功能接口                               POST http://local.trust.com:8341/etheta/management/xinmei/button/systemPlatform/insertOffenUseOption/admin
+portal页面根据用户名修改密码                                           POST http://local.trust.com:8341/etheta/management/xinmei/button/systemPlatform/insertOffenUseOption/admin
+查询系统平台列表                                                       POST http://local.trust.com:8341/etheta/management/xinmei/button/systemPlatform/selectSystemPlatform
+新增系统信息                                                           POST http://local.trust.com:8341/etheta/management/xinmei/button/systemPlatform/addSystem
+修改系统信息                                                           POST http://local.trust.com:8341/etheta/management/xinmei/button/systemPlatform/UpadateSystemPlatform
+删除系统平台                                                           GET http://local.trust.com:8341/etheta/management/xinmei/button/systemPlatform/deleteSystem/{systemPlatformCd}
+查询日志时候，所属系统的接口                                           POST http://local.trust.com:8341/etheta/management/xinmei/button/systemPlatform/getAllSystem
+系统初始化的时候,加载左侧菜单列表                                      GET http://local.trust.com:8341/etheta/management/xinmei/selectSysMenu/{systemId}
+根据系统id获取此系统的所有菜单（根据条件查询如分页条件，菜单名，系统id)POST http://local.trust.com:8341/etheta/management/xinmei/getAllMenus
+查询该菜单信息时，获取菜单关联的角色信息                               GET http://local.trust.com:8341/etheta/management/xinmei/getRolesByMenuId/{menuId}
+新增菜单接口                                                           POST http://local.trust.com:8341/etheta/management/xinmei/addMenu
+删除菜单                                                               GET http://local.trust.com:8341/etheta/management/xinmei/deleteMenu/{menuId}
+修改菜单时查询菜单的父级菜单列表的接口（预修改接口）                   GET http://local.trust.com:8341/etheta/management/xinmei/getAllParentMenus
+修改菜单信息                                                           POST http://local.trust.com:8341/etheta/management/xinmei/button/systemPlatform/deleteSystem/{systemPlatformCd}
+根据系统CD得到该系统信息(系统上及菜单获取showOrder)                    GET http://local.trust.com:8341/etheta/management/xinmei/getMenuByPrimaryKey/{menuId}
+获取系统资源列表                                                       POST http://local.trust.com:8341/etheta/management/xinmei/button/privilege/privilegeList
+查询所有的页面资源类型                                                 POST http://local.trust.com:8341/etheta/management/xinmei/button/privilege/getAllResType
+新增资源信息                                                           POST http://local.trust.com:8341/etheta/management/xinmei/button/privilege/addPrivilege
+删除该资源信息系                                                       GET http://local.trust.com:8341/etheta/management/xinmei/button/privilege/deletePrivilege/{privilegeResId}
+修改资源信息                                                           POST http://local.trust.com:8341/etheta/management/xinmei/button/privilege/updatePrivilege
+在新建角色时，根据多个id查询页面有效资源                               POST http://local.trust.com:8341/etheta/management/xinmei/button/privilege/getPrivilegeByMenuIds
+根据用户名，菜单CD 查询权限资源                                        GET http://local.trust.com:8341/etheta/management/xinmei/button/privilege/selectSysPrivilege/{menuId}
+根据条件查询所有的角色                                                 POST http://local.trust.com:8341/etheta/management/xinmei/getAllRoles
+新增角色信息                                                           POST http://local.trust.com:8341/etheta/management/xinmei/insertRole
+通过角色id删除角色数据                                                 POST http://local.trust.com:8341/etheta/management/xinmei/deleteRoleByRoleId/{roleId}
+获取当前角色下的所有菜单和页面资源(预修改)                             GET http://local.trust.com:8341/etheta/management/xinmei/getAllResourceByRoleId
+修改角色信息                                                           POST http://local.trust.com:8341/etheta/management/xinmei/updateRole
+根据主键查询该角色信息                                                 GET http://local.trust.com:8341/etheta/management/xinmei/getRoleByRoleId
+多条件查看日志信息                                                     POST http://local.trust.com:8341/etheta/management/xinmei/button/log/getLogMsg
+多条件查询用户信息                                                     POST http://local.trust.com:8341/etheta/management/privilege/user/select
+新增用户信息                                                           POST  http://local.trust.com:8341/etheta/management/privilege/user/add
+根据用户Id删除该用户信息                                               GET http://local.trust.com:8341/etheta/management/privilege/user/delete
+修改用户时查询所需的数据（预修改）                                     GET http://local.trust.com:8341/etheta/management/privilege/user/selectUpdDis/{userId}
+修改用户信息                                                           POST http://local.trust.com:8341/etheta/management/privilege/user/update
+
+
+
