@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+     
+     <!-- 扫描注解 -->  
+     <context:component-scan base-package="com.oa"></context:component-scan>
+  	 <!-- 映射器  适配器 -->
+  	 <mvc:annotation-driven></mvc:annotation-driven>
+  	 
+  	 <!-- 静态资源能够访问 -->
+  	 <mvc:resources location="/static/" mapping="/static/**"></mvc:resources>
+  	
+  	 <!-- 视图解析器 -->
+  	<!--  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+  	 	<property name="suffix" value=".jsp"></property>
+  	 	<property name="prefix" value="/WEB-INF/jsp/"></property>
+  	 </bean> -->
+  	 <!--  freeMarker 
+  	 	FreeMarkerConfigurer
+  	 	FreeMarkerViewResolver
+  	  -->  
+  	  <!-- freeMarker前缀  后缀 -->
+      <bean class=" org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        	<property name="templateLoaderPath" value="/WEB-INF/application/"></property>
+     	<property name="defaultEncoding" value="utf-8"></property>
+     	<!-- <property name=""></property> -->
+      </bean>
+      
+      <!-- 视图解析器 -->
+      <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+      	<property name="contentType" value="text/html;charset=UTF-8" />
+		<property name="suffix" value=".ftl" />
+		<!-- ${c.contextPath}  -->
+      	<property name="requestContextAttribute" value="c"/>  
+      </bean>
+      
+      <!-- 文件上传的解析器 -->
+      <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+      	<property name="maxUploadSize" value="102400000"></property><!-- 单位是byte -->
+       </bean>
+      
+      <!-- 配置全局拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean class="com.oa.intercepter.LoginIntercepter"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>	
+		
+  </beans>
