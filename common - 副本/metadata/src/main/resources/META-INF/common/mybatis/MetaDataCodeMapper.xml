@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinmei.common.metadata.dao.MetaDataCodeDAO">
+
+    <resultMap id="metaDataCode" type="com.xinmei.common.metadata.dto.MetaDataCode">
+        <result column="META_DATA_ID" property="metaDataId" jdbcType="VARCHAR"/>
+        <result column="META_DATA_CN_NAME" property="metaDataCNName" jdbcType="VARCHAR"/>
+        <result column="META_DATA_EN_NAME" property="metaDataENName" jdbcType="VARCHAR"/>
+        <result column="META_DATA_VERSION" property="version" jdbcType="DECIMAL"/>
+        <result column="META_DATA_STATUS" property="status" jdbcType="VARCHAR"/>
+        <result column="META_DATA_TOPIC_TYPE" property="topicType" jdbcType="VARCHAR"/>
+        <result column="MODIFIED_TIME" property="updateTime" jdbcType="TIMESTAMP"/>
+        <collection property="metaDataCodeValues" column="META_DATA_ID" ofType="com.xinmei.common.metadata.dto.MetaDataCodeValue">
+            <result column="META_DATA_ID" property="metaDataId" jdbcType="VARCHAR"/>
+            <result column="META_DATA_VALUE" property="codeValueVal" jdbcType="VARCHAR"/>
+            <result column="META_DATA_VALUE_CN_NAME" property="codeValueCNName" jdbcType="VARCHAR"/>
+            <result column="META_DATA_VALUE_DESC" property="codeValueDesc" jdbcType="VARCHAR"/>
+            <result column="META_DATA_VALUE_STATUS" property="status" jdbcType="VARCHAR"/>
+            <result column="MODIFIED_TIME" property="updateTime" jdbcType="VARCHAR"/>
+            <result column="META_DATA_VALUE_EN_NAME" property="codeValueENName" jdbcType="VARCHAR"/>
+        </collection>
+    </resultMap>
+
+    <insert id="insertMetaDataCode" parameterType="com.xinmei.common.metadata.dto.MetaDataCode">
+      INSERT INTO T_META_DATA_CODE (META_DATA_ID,META_DATA_CN_NAME,META_DATA_EN_NAME,META_DATA_VERSION,META_DATA_STATUS,META_DATA_TOPIC_TYPE,MODIFIED_TIME)
+        SELECT #{metaDataId,jdbcType=VARCHAR},#{metaDataCNName,jdbcType=VARCHAR},#{metaDataENName,jdbcType=VARCHAR},#{version,jdbcType=DECIMAL},#{status,jdbcType=VARCHAR},#{topicType,jdbcType=VARCHAR},#{updateTime,jdbcType=TIMESTAMP} FROM DUAL
+          WHERE NOT EXISTS (SELECT 1 FROM T_META_DATA_CODE WHERE META_DATA_ID=#{metaDataId,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="queryAllMetaDataCode" resultMap="metaDataCode">
+        SELECT META_DATA.*,DATA_VALUE.* FROM T_META_DATA_CODE META_DATA,T_META_DATA_CODE_VALUE DATA_VALUE WHERE META_DATA.META_DATA_ID=DATA_VALUE.META_DATA_ID
+    </select>
+
+    <select id="queryMetaDataCodeById" resultMap="metaDataCode" parameterType="String">
+        SELECT META_DATA.*,DATA_VALUE.* FROM T_META_DATA_CODE META_DATA,T_META_DATA_CODE_VALUE DATA_VALUE WHERE META_DATA.META_DATA_ID=DATA_VALUE.META_DATA_ID AND META_DATA.META_DATA_ID=#{id}
+    </select>
+
+    <update id="updateMetaDataCode" parameterType="com.xinmei.common.metadata.dto.MetaDataCode">
+        UPDATE T_META_DATA_CODE SET META_DATA_ID =#{metaDataId,jdbcType=VARCHAR}
+        <if test="metaDataCNName !=null and metaDataCNName !=''">
+            ,META_DATA_CN_NAME=#{metaDataCNName,jdbcType=VARCHAR},META_DATA_EN_NAME=#{metaDataENName,jdbcType=VARCHAR},
+            META_DATA_VERSION=#{version,jdbcType=DECIMAL},META_DATA_STATUS=#{status,jdbcType=VARCHAR},
+            META_DATA_TOPIC_TYPE=#{topicType,jdbcType=VARCHAR},MODIFIED_TIME=#{updateTime,jdbcType=TIMESTAMP}
+        </if>
+        WHERE META_DATA_ID =#{metaDataId,jdbcType=VARCHAR} AND MODIFIED_TIME &lt; #{updateTime,jdbcType=TIMESTAMP}
+    </update>
+
+    <delete id="deleteMetaDataCode" parameterType="com.xinmei.common.metadata.dto.MetaDataCode">
+        DELETE FROM T_META_DATA_CODE WHERE META_DATA_ID =#{metaDataId,jdbcType=VARCHAR} AND MODIFIED_TIME &lt; #{updateTime,jdbcType=TIMESTAMP}
+    </delete>
+
+    <delete id="deleteAllMetaDataCode">
+        DELETE FROM T_META_DATA_CODE
+    </delete>
+
+
+</mapper>

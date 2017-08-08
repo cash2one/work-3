@@ -1,0 +1,27 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sofa="http://schema.alipay.com/sofa/schema/service"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://schema.alipay.com/sofa/schema/slite
+        http://schema.alipay.com/sofa/slite.xsd
+        http://schema.alipay.com/sofa/schema/service
+        http://schema.alipay.com/sofa/common/sofa-service-4-0-0.xsd"
+       default-autowire="byName">
+
+    <beans profile="sit,uat">
+        <sofa:reference id="umsMessageManagerFacade" interface="com.trust.ums.facade.UmsMessageManagerFacade">
+            <sofa:binding.tr>
+            </sofa:binding.tr >
+        </sofa:reference>
+    </beans>
+
+    <beans profile="local">
+        <sofa:reference id="umsMessageManagerFacade" interface="com.trust.ums.facade.UmsMessageManagerFacade">
+            <sofa:binding.tr>
+                <sofa:global-attrs address-wait-time="5000" test-url="10.253.23.27:12200"/>
+            </sofa:binding.tr >
+        </sofa:reference>
+    </beans>
+
+
+</beans>

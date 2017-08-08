@@ -1,0 +1,147 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sofa="http://schema.alipay.com/sofa/schema/slite"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://schema.alipay.com/sofa/schema/slite
+        http://schema.alipay.com/sofa/slite.xsd" default-autowire="byName">
+
+    <import resource="classpath*:META-INF/sofa-beans-api.xml"/>
+
+    <bean id="springContextUtils" class="com.xinmei.common.basic.tools.SpringContextUtils" lazy-init="false"/>
+
+    <bean id="memcachedClient" class="net.spy.memcached.spring.MemcachedClientFactoryBean" depends-on="commonExtend"/>
+
+<!--    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="org.h2.Driver" />
+        <property name="url" value="jdbc:h2:mem:testdb;MODE=MYSQL;DB_CLOSE_DELAY=-1"/>
+        <property name="username" value="root" />
+        <property name="password" value="123456" />
+    </bean>-->
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url">
+            <value>jdbc:mysql://10.253.105.151:3306/healthCheck</value>
+        </property>
+        <property name="username">
+            <value>health_test</value>
+        </property>
+        <property name="password">
+            <value>health123</value>
+        </property>
+        <property name="connectionProperties">
+            <value>useUnicode=yes;characterEncoding=utf8;socketTimeout=5000;connectTimeout=1000
+            </value>
+        </property>
+    </bean>
+
+    <!-- 事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- 事务模板 -->
+    <bean id="transactionTemplate"
+          class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
+
+    <!-- enable transaction annotation support -->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <bean id="sqlSessionFactoryMybatis" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis-configuration.xml" />
+        <property name="mapperLocations" value="classpath*:META-INF/common/mybatis/*Mapper.xml " />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!--此配置为了省略每个mapper bean的配置, basePackage为Mapper.java所在的包 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.xinmei.common.metadata.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactoryMybatis" />
+    </bean>
+
+    <!--元数据标准码码值service-->
+    <bean id="metaDataCodeValueService" class="com.xinmei.common.metadata.service.impl.MetaDataCodeValueServiceImpl" />
+    <!--元数据标准码service-->
+    <bean id="metaDataCodeService" class="com.xinmei.common.metadata.service.impl.MetaDataCodeServiceImpl"/>
+    <!--元数据消息处理记录service-->
+    <bean id="metaDataOperationService" class="com.xinmei.common.metadata.service.impl.MetaDataOperationServiceImpl"/>
+    <!--元数据帮助工具类-->
+    <bean id="metaDataHelper" class="com.xinmei.common.metadata.util.MetaDataHelper" destroy-method="destroy" depends-on="commonExtend"/>
+    <!--元数据容器类-->
+    <bean id="metaDataContainer" class="com.xinmei.common.metadata.MetaDataContainer" depends-on="metaDataHelper"/>
+    <!--元数据rest服务类-->
+    <bean id="metaDataRestFacade" class="com.xinmei.common.metadata.facade.impl.MetaDataRestFacadeImpl"/>
+
+<!--    &lt;!&ndash;元数据平台接口&ndash;&gt;
+    <sofa:reference id="stdCodeTableRPCFacade" interface="com.xinmei.edata.metadata.facade.StdCodeTableRPCFacade">
+        <sofa:binding.tr>
+            <sofa:global-attrs address-wait-time="5000" test-url="10.253.105.141:12200"/>
+        </sofa:binding.tr>
+    </sofa:reference>-->
+
+<!--
+    <sofa:reference id="eventSyncFacade" interface="com.xinmei.edata.metadata.facade.EventInformationSynServerFacade">
+        <sofa:binding.tr>
+            &lt;!&ndash;&ndash;&gt;<sofa:global-attrs address-wait-time="5000" test-url="10.253.105.141:12200"/>
+        </sofa:binding.tr >
+    </sofa:reference>
+
+    &lt;!&ndash;消息队列&ndash;&gt;
+    <sofa:consumer id="metaData" group="S_COMMON">
+        <sofa:listener ref="metaDataMessageListener"/>
+        <sofa:channels>
+            <sofa:channel value="TP_EDT_STDCD">
+                <sofa:event eventType="direct" eventCode="EC_EDT_90101" persistence="false"/>
+            </sofa:channel>
+        </sofa:channels>
+        <sofa:binding.msg_broker/>
+    </sofa:consumer>
+
+    <bean id="metaDataMessageListener" class="com.xinmei.common.metadata.listener.MetaDataMessageListener"/>
+
+    <bean id="springContextUtils" class="com.xinmei.common.basic.tools.SpringContextUtils" lazy-init="false"/>
+    <bean id="memcachedClient" class="net.spy.memcached.spring.MemcachedClientFactoryBean" depends-on="commonExtend"/>-->
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <constructor-arg ref="clientHttpRequestFactory"/>
+    </bean>
+
+    <bean id="httpClient" class="com.xinmei.general.tools.HttpsClientUtil"  factory-method="getHttpClient"/>
+    <bean id="clientHttpRequestFactory" class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+        <constructor-arg ref="httpClient"/>
+    </bean>
+    <bean id="mobileDeviceService" class="com.xinmei.common.message.mobileservice.service.impl.MobileDeviceServiceImpl"/>
+
+    <bean id="commonExtend" class="com.xinmei.common.basic.CommonExtend">
+        <property name="invokeBusinessPlatform" value="false"/>
+        <property name="invokeMetaDataPlatform" value="false"/>
+        <property name="sysId" value="cat"/>
+        <property name="accountName" value="dayu_00000009"/>
+        <property name="accountType" value="sms"/>
+        <property name="mappingKey1" value="001"/>
+        <property name="mappingKey2" value="001"/>
+        <property name="mappingKey3" value="001"/>
+        <property name="mappingKey4" value="001"/>
+    </bean>
+
+    <sofa:reference id="umsMessageManagerFacade" interface="com.trust.ums.facade.UmsMessageManagerFacade">
+        <sofa:binding.tr>
+            <sofa:global-attrs address-wait-time="5000" test-url="10.253.23.27:12200"/>
+        </sofa:binding.tr >
+    </sofa:reference>
+
+
+    <!--<bean id="testFacade" class="com.xinmei.common.metadata.facade.impl.TestFacadeImpl"/>-->
+</beans>
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xinmei.common.metadata.dao.MetaDataCodeValueDAO">
+
+    <insert id="batchInsertMetaDataCodeValue" parameterType="List">
+        INSERT INTO T_META_DATA_CODE_VALUE (META_DATA_ID,META_DATA_VALUE,META_DATA_VALUE_CN_NAME,META_DATA_VALUE_DESC,META_DATA_VALUE_STATUS,MODIFIED_TIME,META_DATA_VALUE_EN_NAME)
+        <foreach collection="list" item="item" index="index" separator="union all">
+            SELECT #{item.metaDataId,jdbcType=VARCHAR},#{item.codeValueVal,jdbcType=VARCHAR},#{item.codeValueCNName,jdbcType=VARCHAR},#{item.codeValueDesc,jdbcType=VARCHAR},
+                #{item.status,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},#{item.codeValueENName,jdbcType=VARCHAR}
+            FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM T_META_DATA_CODE_VALUE WHERE META_DATA_ID=#{item.metaDataId,jdbcType=VARCHAR} AND META_DATA_VALUE=#{item.codeValueVal,jdbcType=VARCHAR})
+        </foreach>
+
+    </insert>
+
+    <insert id="insertMetaDataCodeValue" parameterType="com.xinmei.common.metadata.dto.MetaDataCodeValue">
+        INSERT INTO T_META_DATA_CODE_VALUE (META_DATA_ID,META_DATA_VALUE,META_DATA_VALUE_CN_NAME,META_DATA_VALUE_DESC,META_DATA_VALUE_STATUS,MODIFIED_TIME,META_DATA_VALUE_EN_NAME)VALUES(
+            #{metaDataId,jdbcType=VARCHAR},#{codeValueVal,jdbcType=VARCHAR},#{codeValueCNName,jdbcType=VARCHAR},#{codeValueDesc,jdbcType=VARCHAR},
+            #{status,jdbcType=VARCHAR},#{updateTime,jdbcType=TIMESTAMP},#{codeValueENName,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="batchUpdateMetaDataCodeValue" parameterType="List">
+        <foreach collection="list" item="item" index="index" open="begin" close="end;" separator=";">
+            UPDATE T_META_DATA_CODE_VALUE SET META_DATA_ID=#{item.metaDataId,jdbcType=VARCHAR},META_DATA_VALUE=#{item.codeValueVal,jdbcType=VARCHAR},
+                META_DATA_VALUE_CN_NAME=#{item.codeValueCNName,jdbcType=VARCHAR},META_DATA_VALUE_EN_NAME=#{item.codeValueeNName,jdbcType=VARCHAR},META_DATA_VALUE_DESC=#{item.codeValueDesc,jdbcType=VARCHAR},
+                META_DATA_VALUE_STATUS=#{item.metaDataId,jdbcType=VARCHAR},MODIFIED_TIME=#{item.updateTime,jdbcType=TIMESTAMP}
+                WHERE META_DATA_ID=#{item.metaDataId,jdbcType=VARCHAR} AND META_DATA_VALUE=#{item.codeValueVal,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+
+    <delete id="batchDeleteMetaDataCodeValue" parameterType="List">
+        DELETE FROM T_META_DATA_CODE_VALUE WHERE META_DATA_ID = #{list[0].metaDataId}
+        AND META_DATA_VALUE IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item.codeValueVal,jdbcType=VARCHAR}
+        </foreach>
+        AND MODIFIED_TIME &lt; #{list[0].updateTime}
+    </delete>
+
+    <delete id="deleteAllMetaDataCodeValue">
+        DELETE FROM T_META_DATA_CODE_VALUE
+    </delete>
+
+</mapper>

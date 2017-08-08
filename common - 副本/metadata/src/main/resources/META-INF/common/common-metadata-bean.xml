@@ -1,0 +1,50 @@
+﻿<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sofa="http://schema.alipay.com/sofa/schema/slite"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://schema.alipay.com/sofa/schema/slite
+        http://schema.alipay.com/sofa/slite.xsd" default-autowire="byName">
+
+    <!--元数据标准码码值service-->
+    <bean id="metaDataCodeValueService" class="com.xinmei.common.metadata.service.impl.MetaDataCodeValueServiceImpl" />
+    <!--元数据标准码service-->
+    <bean id="metaDataCodeService" class="com.xinmei.common.metadata.service.impl.MetaDataCodeServiceImpl"/>
+    <!--元数据消息处理记录service-->
+    <bean id="metaDataOperationService" class="com.xinmei.common.metadata.service.impl.MetaDataOperationServiceImpl"/>
+    <!--元数据帮助工具类-->
+    <bean id="metaDataHelper" class="com.xinmei.common.metadata.util.MetaDataHelper" init-method="init" destroy-method="destroy" depends-on="commonExtend"/>
+    <!--元数据容器类-->
+    <bean id="metaDataContainer" class="com.xinmei.common.metadata.MetaDataContainer" depends-on="metaDataHelper"/>
+    <!--元数据rest服务类-->
+    <bean id="metaDataRestFacade" class="com.xinmei.common.metadata.facade.impl.MetaDataRestFacadeImpl"/>
+
+    <!--元数据平台接口-->
+    <sofa:reference id="stdCodeTableRPCFacade" interface="com.xinmei.edata.metadata.facade.StdCodeTableRPCFacade">
+        <sofa:binding.tr>
+            <!--<sofa:global-attrs address-wait-time="5000" test-url="10.253.105.141:12200"/>-->
+        </sofa:binding.tr>
+    </sofa:reference>
+
+    <sofa:reference id="eventSyncFacade" interface="com.xinmei.edata.metadata.facade.EventInformationSynServerFacade">
+        <sofa:binding.tr>
+            <!--<sofa:global-attrs address-wait-time="5000" test-url="10.253.105.141:12200"/>-->
+        </sofa:binding.tr >
+    </sofa:reference>
+
+    <!--消息队列-->
+    <sofa:consumer id="metaData" group="S_COMMON">
+        <sofa:listener ref="metaDataMessageListener"/>
+        <sofa:channels>
+            <sofa:channel value="TP_EDT_STDCD">
+                <sofa:event eventType="direct" eventCode="EC_EDT_90101" persistence="false"/>
+            </sofa:channel>
+        </sofa:channels>
+        <sofa:binding.msg_broker/>
+    </sofa:consumer>
+
+    <bean id="metaDataMessageListener" class="com.xinmei.common.metadata.listener.MetaDataMessageListener"/>
+    <!--<bean id="testFacade" class="com.xinmei.common.metadata.facade.impl.TestFacadeImpl"/>-->
+</beans>
+

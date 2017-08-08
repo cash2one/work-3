@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>common</artifactId>
+        <groupId>com.xinmei.common</groupId>
+        		<!--
+		<version>1.0.0</version>-->
+			<version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>common-metadata</artifactId>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.xinmei.common</groupId>
+            <artifactId>common-basic</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.xinmei.common</groupId>
+            <artifactId>common-general-tools</artifactId>
+        </dependency>
+        <!-- 以下内容为原dal项目的依赖 -->
+        <!--增加slite api 依赖 -->
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>slite-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>slite-starter-rpc</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>slite-starter-mgw</artifactId>
+        </dependency>
+
+        <!-- 数据库连接依赖 -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+        </dependency>
+        <!-- 事务依赖 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+        <!-- sql依赖 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
+
+        <!-- 注入DMS依赖 -->
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>slite-starter-msgbroker</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>slite-starter-sofarest</artifactId>
+        </dependency>
+
+
+        <!---->
+        <dependency>
+            <groupId>com.xinmei.slite.spring.mvc</groupId>
+            <artifactId>edata-facade</artifactId>
+            <version>1.0.0-20161124</version>
+        </dependency>
+
+
+    </dependencies>
+    
+    		<distributionManagement>
+	  <repository>
+	    <id>nexus-server@public</id>
+	     <url> http://10.253.103.73:8081/nexus/content/repositories/releases/ </url>
+	  </repository>
+	  <snapshotRepository>
+	    <id>nexus-server@public-snapshots</id>
+	   <url> http://10.253.103.73:8081/nexus/content/repositories/snapshots/ </url>
+	  </snapshotRepository>
+	</distributionManagement>
+
+</project>

@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.xinmei.common</groupId>
+		<artifactId>common</artifactId>
+		<!--
+		<version>1.0.0</version>-->
+			<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>common-basic</artifactId>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.alipay.sofa</groupId>
+			<artifactId>slite-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.spy</groupId>
+			<artifactId>spymemcached</artifactId>
+			<version>2.10.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>3.2.14.RELEASE</version>
+		</dependency>
+
+
+	</dependencies>
+	
+			<distributionManagement>
+	  <repository>
+	    <id>nexus-server@public</id>
+	     <url> http://10.253.103.73:8081/nexus/content/repositories/releases/ </url>
+	  </repository>
+	  <snapshotRepository>
+	    <id>nexus-server@public-snapshots</id>
+	   <url> http://10.253.103.73:8081/nexus/content/repositories/snapshots/ </url>
+	  </snapshotRepository>
+	</distributionManagement>
+
+
+</project>
