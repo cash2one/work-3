@@ -1,0 +1,77 @@
+CREATE TABLE T01_Data_Lv_Mark_Tbl
+(
+	Biz_PK_Data          VARCHAR(2000) NOT NULL,
+	Exec_Before_Data     TEXT NULL,
+	Exec_After_Data      MEDIUMTEXT NULL,
+	RollbakSQL           MEDIUMTEXT NULL,
+	SQL_ID               VARCHAR(20) NOT NULL
+);
+
+ALTER TABLE T01_Data_Lv_Mark_Tbl
+ADD PRIMARY KEY (SQL_ID,Biz_PK_Data);
+
+CREATE TABLE T01_ExecSQL_Tbl
+(
+	Exec_Sttm            VARCHAR(2000) NULL,
+	Data_Src             VARCHAR(10) NULL,
+	Desc                 VARCHAR(1000) NULL,
+	Exec_Tm              DATE NULL,
+	Cnsm_Tm              INTEGER NULL,
+	SQL_Seq_Num          INTEGER NULL,
+	SQL_ID               VARCHAR(20) NOT NULL,
+	Affect_Data_Num      INTEGER NULL,
+	Oper_Tbl             VARCHAR(100) NULL,
+	Biz_PK_Fld           VARCHAR(200) NULL,
+	Problem_Num          VARCHAR(20) NULL,
+	Func_Module          VARCHAR(100) NULL,
+	Tbl_Data_Qty         BIGINT(19) NULL,
+	Txn_Tbl_Ind          VARCHAR(1) NULL
+);
+
+ALTER TABLE T01_ExecSQL_Tbl
+ADD PRIMARY KEY (SQL_ID);
+
+CREATE TABLE T01_Prd_Problem_Desc_Tbl
+(
+	Problem_Num          VARCHAR(20) NOT NULL,
+	RQID                 VARCHAR(30) NULL,
+	Desc                 VARCHAR(2000) NULL,
+	Create_Tm            DATE NULL,
+	Creator              VARCHAR(100) NULL
+);
+
+ALTER TABLE T01_Prd_Problem_Desc_Tbl
+ADD PRIMARY KEY (Problem_Num);
+
+alter TABLE T01_Data_Lv_Mark_Tbl COMMENT = '数据留痕表' ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
+    ALTER TABLE T01_Data_Lv_Mark_Tbl CHANGE COLUMN SQL_ID SQL_ID VARCHAR(20) NOT NULL COMMENT 'SQL_ID';
+      ALTER TABLE T01_Data_Lv_Mark_Tbl CHANGE COLUMN Biz_PK_Data Biz_PK_Data VARCHAR(2000) NOT NULL COMMENT '业务主键数据';
+      ALTER TABLE T01_Data_Lv_Mark_Tbl CHANGE COLUMN Exec_Before_Data Exec_Before_Data TEXT NULL COMMENT '执行前数据';
+      ALTER TABLE T01_Data_Lv_Mark_Tbl CHANGE COLUMN Exec_After_Data Exec_After_Data MEDIUMTEXT NULL COMMENT '执行后数据';
+      ALTER TABLE T01_Data_Lv_Mark_Tbl CHANGE COLUMN RollbakSQL RollbakSQL MEDIUMTEXT NULL COMMENT '回滚SQL';
+      
+alter TABLE T01_ExecSQL_Tbl COMMENT = '执行SQL表' ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
+    ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN SQL_ID SQL_ID VARCHAR(20) NOT NULL COMMENT 'SQL_ID';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN SQL_Seq_Num SQL_Seq_Num INTEGER NULL COMMENT 'SQL序号';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Exec_Sttm Exec_Sttm VARCHAR(2000) NULL COMMENT '执行语句';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Data_Src Data_Src VARCHAR(10) NULL COMMENT '数据源';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Desc Desc VARCHAR(1000) NULL COMMENT '描述';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Exec_Tm Exec_Tm DATE NULL COMMENT '执行时间';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Cnsm_Tm Cnsm_Tm INTEGER NULL COMMENT '消耗时间';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Affect_Data_Num Affect_Data_Num INTEGER NULL COMMENT '影响数据数';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Oper_Tbl Oper_Tbl VARCHAR(100) NULL COMMENT '操作表';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Biz_PK_Fld Biz_PK_Fld VARCHAR(200) NULL COMMENT '业务主键字段';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Problem_Num Problem_Num VARCHAR(20) NULL COMMENT '问题号';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Func_Module Func_Module VARCHAR(100) NULL COMMENT '功能模块';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Tbl_Data_Qty Tbl_Data_Qty BIGINT(19) NULL COMMENT '表数据数量';
+      ALTER TABLE T01_ExecSQL_Tbl CHANGE COLUMN Txn_Tbl_Ind Txn_Tbl_Ind VARCHAR(1) NULL COMMENT '交易表标志';
+      
+alter TABLE T01_Prd_Problem_Desc_Tbl COMMENT = '生产问题描述表' ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
+    ALTER TABLE T01_Prd_Problem_Desc_Tbl CHANGE COLUMN Problem_Num Problem_Num VARCHAR(20) NOT NULL COMMENT '问题号';
+      ALTER TABLE T01_Prd_Problem_Desc_Tbl CHANGE COLUMN RQID RQID VARCHAR(30) NULL COMMENT 'RQID';
+      ALTER TABLE T01_Prd_Problem_Desc_Tbl CHANGE COLUMN Desc Desc VARCHAR(2000) NULL COMMENT '描述';
+      ALTER TABLE T01_Prd_Problem_Desc_Tbl CHANGE COLUMN Create_Tm Create_Tm DATE NULL COMMENT '创建时间';
+      ALTER TABLE T01_Prd_Problem_Desc_Tbl CHANGE COLUMN Creator Creator VARCHAR(100) NULL COMMENT '创建人';
